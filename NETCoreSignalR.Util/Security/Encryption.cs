@@ -13,9 +13,7 @@ namespace NETCoreSignalR.Util.Security
         string Encrypt(string plainText);
         string Decrypt(string cipherText);
     }
-    /// <summary>
-    /// Classe estática voltada a encriptação
-    /// </summary>
+
     public class Encryption : IEncryption
     {
         public Encryption(IConfiguration configuration)

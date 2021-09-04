@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Repository",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Util", "NETCoreSignalR.Util\NETCoreSignalR.Util.csproj", "{137031E7-033D-45DC-98FD-BC5FE33DBC80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Services", "NETCoreSignalR.Services\NETCoreSignalR.Services.csproj", "{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Tests", "NETCoreSignalR.Tests\NETCoreSignalR.Tests.csproj", "{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Domain", "NETCoreSignalR.Domain\NETCoreSignalR.Domain.csproj", "{A22141B4-1805-46EE-A7F4-F6B93F898B0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{137031E7-033D-45DC-98FD-BC5FE33DBC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137031E7-033D-45DC-98FD-BC5FE33DBC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{137031E7-033D-45DC-98FD-BC5FE33DBC80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

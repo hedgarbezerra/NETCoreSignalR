@@ -10,5 +10,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NETCoreSignalR.Repository\NETCoreSignalR.Repository.csproj" />
+    <ProjectReference Include="..\NETCoreSignalR.Services\NETCoreSignalR.Services.csproj" />
+    <ProjectReference Include="..\NETCoreSignalR.Util\NETCoreSignalR.Util.csproj" />
+  </ItemGroup>
+
 
 </Project>
