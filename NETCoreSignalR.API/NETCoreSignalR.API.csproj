@@ -4,10 +4,23 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>9845a13c-c585-4d84-aeaf-260f033a0335</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <SignAssembly>false</SignAssembly>
+    <Authors>Hedgar Bezerra</Authors>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hedgarbezerra/NETCoreSignalR</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,6 +28,30 @@
     <ProjectReference Include="..\NETCoreSignalR.Services\NETCoreSignalR.Services.csproj" />
     <ProjectReference Include="..\NETCoreSignalR.Util\NETCoreSignalR.Util.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ESNext</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 
 
 </Project>
