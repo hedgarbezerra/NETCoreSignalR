@@ -12,7 +12,8 @@ namespace NETCoreSignalR.Util.Configuration
         {
         }
 
-        public string ConnectionString { get => GetConfiguration("DEFAULTCONNECTIONSTR", "ConnectionStrings:DEFAULT"); }
+        public string ConnectionString { get => GetConfiguration("DEFAULTCONNECTIONSTR", "ConnectionStrings:SGNR"); }
         public string EncryptionKey { get => GetConfiguration("ENCRYPTIONKEY", "ENCRYPTION_KEY"); }
+        public string JWTKey { get => GetConfiguration("TOKENKEY", "TOKEN_KEY"); }
     }
 }

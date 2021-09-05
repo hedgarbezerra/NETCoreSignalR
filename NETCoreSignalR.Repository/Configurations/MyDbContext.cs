@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Repository.Configurations.EntityMapping;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +11,6 @@ namespace NETCoreSignalR.Repository.Configurations
     {
         public MyDbContext()
         {
-
         }
         public MyDbContext(DbContextOptions options) : base(options)
         {
@@ -20,5 +21,11 @@ namespace NETCoreSignalR.Repository.Configurations
             // Migrations only works with this, somehow
             //optionsBuilder.UseSqlServer("Data Source=HED-GAMING;Initial Catalog=NETCoreAPIDb;Integrated Security=True");
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfiguration(new EventLogConfiguration());
+        }
+
+        public DbSet<EventLog> Logs { get; set; }
     }
 }

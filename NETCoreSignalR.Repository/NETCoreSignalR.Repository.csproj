@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\EntityMapping\" />
+    <ProjectReference Include="..\NETCoreSignalR.Domain\NETCoreSignalR.Domain.csproj" />
+    <ProjectReference Include="..\NETCoreSignalR.Util\NETCoreSignalR.Util.csproj" />
   </ItemGroup>
 
 </Project>
