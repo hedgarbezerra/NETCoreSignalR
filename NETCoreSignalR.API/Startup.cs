@@ -92,36 +92,36 @@ namespace NETCoreSignalR.API
 
             #region JWT token bearer and authentication setup
 
-            //var appSettings = new APISettings(Configuration);
-            //byte[] tokenKeyBytes = Encoding.ASCII.GetBytes(appSettings.JWTKey);
+            var appSettings = new APISettings(Configuration);
+            byte[] tokenKeyBytes = Encoding.ASCII.GetBytes(appSettings.JWTKey);
 
-            //services.AddAuthentication(x =>
-            //{
-            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //}).AddJwtBearer(x =>
-            //{
-            //    x.RequireHttpsMetadata = false;
-            //    x.SaveToken = true;
-            //    x.IncludeErrorDetails = true;
-            //    x.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(tokenKeyBytes),
-            //        ValidateIssuer = true,
-            //        ValidIssuer = "NET Core API",
-            //        ValidateAudience = false,
-            //        ValidateTokenReplay = true,
-            //        ValidateLifetime = true,
-            //        ClockSkew = TimeSpan.Zero
-            //    };
-            //});
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.IncludeErrorDetails = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(tokenKeyBytes),
+                    ValidateIssuer = true,
+                    ValidIssuer = "NET Core API",
+                    ValidateAudience = false,
+                    ValidateTokenReplay = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("WebApp",
-            //        builder => builder.WithOrigins("http://example.com").AllowAnyHeader());
-            //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy("WebApp",
+                    builder => builder.WithOrigins("http://example.com").AllowAnyHeader());
+            });
             #endregion
 
             ServicesBinding servicesBinder = new ServicesBinding(Configuration);
