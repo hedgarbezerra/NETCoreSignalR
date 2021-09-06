@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Repository.Configurations;
+using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;
 using NETCoreSignalR.Services.Pagination;
 using NETCoreSignalR.Util.Configuration;
@@ -26,13 +28,13 @@ namespace NETCoreSignalR.API
         {
             var apiSettings = new APISettings(_config);
             #region Services
-
+            services.AddTransient<ILoggingService, LogService>();
             services.AddTransient<IAuthService, AuthenticationService>((_) => new AuthenticationService(apiSettings.JWTKey));
             #endregion
 
             #region Helpers
             services.AddSingleton<IHashing, Hashing>();
-            services.AddSingleton<IEncryption, Encryption>();
+            services.AddSingleton<IEncryption, Encryption>(_ => new Encryption(apiSettings.EncryptionKey));
             services.AddSingleton<IUriService>(o =>
             {
                 var accessor = o.GetRequiredService<IHttpContextAccessor>();
@@ -46,6 +48,7 @@ namespace NETCoreSignalR.API
             #region Repositories
             services.AddDbContext<MyDbContext>(opt => opt.UseSqlServer(apiSettings.ConnectionString));
 
+            services.AddScoped<IRepository<EventLog>, LogRepository>();
             #endregion
 
         }

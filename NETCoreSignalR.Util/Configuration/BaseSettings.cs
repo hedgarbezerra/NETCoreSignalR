@@ -25,7 +25,7 @@ namespace NETCoreSignalR.Util.Configuration
         {
             var configValue = _config[configKey] ?? _config[substitutionKey];
             if (shouldDecrypt && _encryption != null)
-                configValue = _encryption.Decrypt(configValue ?? "");
+                configValue = _encryption.Decrypt(configValue);
 
             return configValue;
         }

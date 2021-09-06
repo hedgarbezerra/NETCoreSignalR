@@ -101,21 +101,21 @@ namespace NETCoreSignalR.Util.Security
         }
 
         /// <summary>
-        /// Método retorna uma string aleatória podendo ser utilizadas para senhas, ou quaisquer outras coisas
+        /// Generate random string considering chars, numbers and special chars
         /// </summary>
-        /// <param name="tamanhoString">int com o tamanho desejado da string</param>
-        /// <returns>string aleatória utilizando letras, caracteres especiais e números</returns>
-        public string RandomString(int tamanhoString = 8)
+        /// <param name="stringLength">defines the length of the random string</param>
+        /// <returns>Generate random string considering chars, numbers and special chars</returns>
+        public string RandomString(int stringLength = 8)
         {
             char[] chars = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%&".ToCharArray();
 
-            byte[] data = new byte[4 * tamanhoString];
+            byte[] data = new byte[4 * stringLength];
 
             _rngProvider.GetBytes(data);
 
-            StringBuilder result = new StringBuilder(tamanhoString);
+            StringBuilder result = new StringBuilder(stringLength);
 
-            for (int i = 0; i < tamanhoString; i++)
+            for (int i = 0; i < stringLength; i++)
             {
                 var rnd = BitConverter.ToUInt32(data, i * 4);
                 var idx = rnd % chars.Length;
