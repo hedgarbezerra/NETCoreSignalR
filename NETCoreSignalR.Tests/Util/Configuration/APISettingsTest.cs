@@ -24,21 +24,26 @@ namespace NETCoreSignalR.Tests.Util.Configuration
         [Test]
         public void GetJWTKey()
         {
-            mqConfiguration.SetupGet(a => a[It.IsAny<string>()]).Returns("");
+            mqConfiguration.SetupGet(a => a["TOKEN_KEY"]).Returns("anystring");
+
+            Assert.IsNotNull(_apiSettings.JWTKey);
+            Assert.IsNotEmpty(_apiSettings.JWTKey);
         }
 
         [Test]
         public void GetEncryptionKey()
         {
-            mqConfiguration.SetupGet(a => a[It.IsAny<string>()]).Returns("");
-
+            mqConfiguration.SetupGet(a => a["ENCRYPTION_KEY"]).Returns("otherstring");
+            Assert.IsNotNull(_apiSettings.EncryptionKey);
+            Assert.IsNotEmpty(_apiSettings.EncryptionKey);
         }
 
         [Test]
         public void GetConnectionString()
         {
-            mqConfiguration.SetupGet(a => a[It.IsAny<string>()]).Returns("");
-
+            mqConfiguration.SetupGet(a => a["ConnectionStrings:SGNR"]).Returns("justanotherstring");
+            Assert.IsNotNull(_apiSettings.ConnectionString);
+            Assert.IsNotEmpty(_apiSettings.ConnectionString);
         }
     }
 }
