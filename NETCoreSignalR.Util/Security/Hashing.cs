@@ -18,33 +18,21 @@ namespace NETCoreSignalR.Util.Security
         private readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();
         public string ComputeHash(string plainText)
         {
-            int minSaltSize = 4;
-            int maxSaltSize = 8;
+            if (string.IsNullOrEmpty(plainText))
+                throw new ArgumentNullException("The text can't be null nor empty.");
 
-            Random random = new Random();
-            int saltSize = random.Next(minSaltSize, maxSaltSize);
-
-            var saltBytes = new byte[saltSize];
-
-
-            _rngProvider.GetNonZeroBytes(saltBytes);
+            byte[] saltBytes = GenerateSaltBytes();
 
             return ComputeHash(plainText, saltBytes);
         }
         public string ComputeHash(string plainText, byte[] saltBytes = null)
         {
+            if (string.IsNullOrEmpty(plainText))
+                throw new ArgumentNullException("The text can't be null nor empty.");
+
             if (saltBytes == null)
             {
-                int minSaltSize = 4;
-                int maxSaltSize = 8;
-
-                Random random = new Random();
-                int saltSize = random.Next(minSaltSize, maxSaltSize);
-
-                saltBytes = new byte[saltSize];
-
-
-                _rngProvider.GetNonZeroBytes(saltBytes);
+                saltBytes = GenerateSaltBytes();
             }
 
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
@@ -79,6 +67,9 @@ namespace NETCoreSignalR.Util.Security
 
         public bool VerifyHash(string plainText, string hashValue)
         {
+            if (string.IsNullOrEmpty(plainText) || string.IsNullOrEmpty(hashValue))
+                throw new ArgumentNullException("The text neither the hash can be null nor empty.");
+
             byte[] hashWithSaltBytes = Convert.FromBase64String(hashValue);
 
             int hashSizeInBits = 256;
@@ -98,6 +89,22 @@ namespace NETCoreSignalR.Util.Security
             string expectedHashString = ComputeHash(plainText, saltBytes);
 
             return hashValue == expectedHashString;
+        }
+        private byte[] GenerateSaltBytes()
+        {
+            RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider();
+            int minSaltSize = 4;
+            int maxSaltSize = 8;
+
+            Random random = new Random();
+            int saltSize = random.Next(minSaltSize, maxSaltSize);
+
+            var saltBytes = new byte[saltSize];
+
+
+            rngProvider.GetNonZeroBytes(saltBytes);
+
+            return saltBytes;
         }
 
         /// <summary>
