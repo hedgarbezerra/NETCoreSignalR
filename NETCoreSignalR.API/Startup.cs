@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -37,7 +38,7 @@ namespace NETCoreSignalR.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -72,6 +73,13 @@ namespace NETCoreSignalR.API
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = ApiVersionReader.Combine(new HeaderApiVersionReader("x-api-version"), new QueryStringApiVersionReader("api-version"));
             });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
             #endregion
 
             #region Swagger documentation setup
@@ -80,13 +88,6 @@ namespace NETCoreSignalR.API
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<SwaggerConfiguration>();
-            });
-
-            services.AddVersionedApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'VVV";
-                options.SubstituteApiVersionInUrl = true;
-                options.AssumeDefaultVersionWhenUnspecified = true;
             });
             #endregion
 
@@ -166,7 +167,7 @@ namespace NETCoreSignalR.API
 
             #endregion
 
-            #region Setting up swagger for versioning
+            #region Setting up swagger UI with versioning
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -178,6 +179,19 @@ namespace NETCoreSignalR.API
             });
             #endregion
 
+            #region Setting up Azure Keyvault
+
+            if (env.IsProduction())
+            {
+                var sp = app.ApplicationServices;
+                var azureSettings = new AzureSettings(Configuration, sp.GetService<IEncryption>());
+                var builder = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", false, true)
+                   .AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(azureSettings.KeyVaultURI, azureSettings.KeyVaultClientId, azureSettings.KeyVaultKey));
+
+                Configuration = builder.Build();
+            }
+            #endregion
 
             app.UseHttpsRedirection();
 
