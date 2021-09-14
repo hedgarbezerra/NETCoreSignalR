@@ -19,6 +19,7 @@ namespace NETCoreSignalR.Services.Pagination
 
         public PaginatedList(IQueryable<T> source, IUriService uriService, string route, int pageIndex, int? pageSize = 10)
         {
+            //pageIndex = pageIndex <= 0 ? 1 : pageIndex;
             PageIndex = pageIndex;
             PageSize = (int)pageSize;
             TotalCount = source.Count();

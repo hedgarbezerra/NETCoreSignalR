@@ -16,6 +16,7 @@ namespace NETCoreSignalR.Tests.Repository
         private MyDbContext _context;
         private LogRepository _repo;
 
+        //Arrange
         [SetUp]
         public void Setup()
         {
@@ -37,9 +38,11 @@ namespace NETCoreSignalR.Tests.Repository
         [Test]
         public void Get_AllEventLogs_ReturnsEventLogs()
         {
+            //act
             AddLogsToContext();
             var logs = _repo.Get();
 
+            //assert
             Assert.IsNotNull(logs);
             Assert.IsNotEmpty(logs);
             Assert.That(logs.Count() >= 2);

@@ -46,7 +46,7 @@ namespace NETCoreSignalR.Tests.Services.Data
             mqRepository.Setup(r => r.Get()).Returns(list.AsQueryable());
 
             var logs = service.Get();
-
+            mqRepository.Verify(x => x.Get(), Times.Once);
             Assert.That(logs.Count() == 3);
         }
 
@@ -101,7 +101,8 @@ namespace NETCoreSignalR.Tests.Services.Data
         [TestCase(5)]
         public void Get_FilterLogById_ReturnsEventLog(int id)
         {
-            mqRepository.Setup(r => r.Get(It.IsAny<int>())).Returns(new EventLog() { Id = id, LogLevel = LogLevel.Warning, Message = "Erro", CreatedTime = DateTime.UtcNow });
+            mqRepository.Setup(r => r.Get(It.IsAny<int>()))
+                .Returns(new EventLog() { Id = id, LogLevel = LogLevel.Warning, Message = "Erro", CreatedTime = DateTime.UtcNow });
             var logItem = service.Get(id);
 
             Assert.IsNotNull(logItem);

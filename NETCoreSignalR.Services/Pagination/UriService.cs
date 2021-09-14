@@ -15,6 +15,9 @@ namespace NETCoreSignalR.Services.Pagination
         private readonly string _baseUri;
         public UriService(string baseUri)
         {
+            if (string.IsNullOrEmpty(baseUri) || string.IsNullOrWhiteSpace(baseUri))
+                throw new ArgumentException($"the {typeof(string)} for base URI can't be empty.");
+
             _baseUri = baseUri;
         }
         public Uri GetPageUri(int pageIndex, int pageSize, string route)
