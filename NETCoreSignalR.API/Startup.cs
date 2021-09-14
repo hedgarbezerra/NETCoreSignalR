@@ -133,6 +133,7 @@ namespace NETCoreSignalR.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             IApiVersionDescriptionProvider apiVersioningProvider)
         {
+            var apiConfig = new APISettings(Configuration);
             #region Setting up exception handling
             if (env.IsDevelopment())
             {
@@ -154,7 +155,6 @@ namespace NETCoreSignalR.API
             #endregion
 
             #region setting up logging 
-            var apiConfig = new APISettings(Configuration);
 
             Log.Logger = new LoggerConfiguration()
                       .Enrich.FromLogContext()
@@ -184,10 +184,9 @@ namespace NETCoreSignalR.API
             if (env.IsProduction())
             {
                 var sp = app.ApplicationServices;
-                var azureSettings = new AzureSettings(Configuration, sp.GetService<IEncryption>());
                 var builder = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", false, true)
-                   .AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(azureSettings.KeyVaultURI, azureSettings.KeyVaultClientId, azureSettings.KeyVaultKey));
+                   .AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(apiConfig.KeyVaultURI, apiConfig.KeyVaultClientId, apiConfig.KeyVaultKey));
 
                 Configuration = builder.Build();
             }
