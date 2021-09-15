@@ -33,7 +33,6 @@ namespace NETCoreSignalR.API
             services.AddTransient<ILoggingService, LogService>();
             //services.AddTransient<IRestClient, RestClient>();
             services.AddTransient<IHttpConsumer, HttpConsumer>();
-            services.AddTransient<ISpotifyService, SpotifyService>();
             services.AddTransient<IAuthService, AuthenticationService>((_) => new AuthenticationService(apiSettings.JWTKey));
             #endregion
 

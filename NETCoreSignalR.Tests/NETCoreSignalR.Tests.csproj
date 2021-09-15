@@ -20,4 +20,8 @@
     <ProjectReference Include="..\NETCoreSignalR.Util\NETCoreSignalR.Util.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\External\" />
+  </ItemGroup>
+
 </Project>
