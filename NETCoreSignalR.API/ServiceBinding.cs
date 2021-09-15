@@ -6,9 +6,11 @@ using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Repository.Configurations;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;
+using NETCoreSignalR.Services.External;
 using NETCoreSignalR.Services.Pagination;
 using NETCoreSignalR.Util.Configuration;
 using NETCoreSignalR.Util.Security;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +31,9 @@ namespace NETCoreSignalR.API
             var apiSettings = new APISettings(_config);
             #region Services
             services.AddTransient<ILoggingService, LogService>();
+            //services.AddTransient<IRestClient, RestClient>();
+            services.AddTransient<IHttpConsumer, HttpConsumer>();
+            services.AddTransient<ISpotifyService, SpotifyService>();
             services.AddTransient<IAuthService, AuthenticationService>((_) => new AuthenticationService(apiSettings.JWTKey));
             #endregion
 
