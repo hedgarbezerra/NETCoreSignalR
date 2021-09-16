@@ -3,22 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.API", "NETCoreSignalR.API\NETCoreSignalR.API.csproj", "{611615B6-E4EB-4F0E-8DDD-6B5595CA7EFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.API", "NETCoreSignalR.API\NETCoreSignalR.API.csproj", "{611615B6-E4EB-4F0E-8DDD-6B5595CA7EFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Repository", "NETCoreSignalR.Repository\NETCoreSignalR.Repository.csproj", "{5F8E390C-3BF9-46D3-8A3F-45F5B7ED926F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.Repository", "NETCoreSignalR.Repository\NETCoreSignalR.Repository.csproj", "{5F8E390C-3BF9-46D3-8A3F-45F5B7ED926F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Util", "NETCoreSignalR.Util\NETCoreSignalR.Util.csproj", "{137031E7-033D-45DC-98FD-BC5FE33DBC80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.Util", "NETCoreSignalR.Util\NETCoreSignalR.Util.csproj", "{137031E7-033D-45DC-98FD-BC5FE33DBC80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Services", "NETCoreSignalR.Services\NETCoreSignalR.Services.csproj", "{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.Services", "NETCoreSignalR.Services\NETCoreSignalR.Services.csproj", "{EBE760F0-3CEE-4CA6-AFC4-24F0C97D2272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Tests", "NETCoreSignalR.Tests\NETCoreSignalR.Tests.csproj", "{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.Tests", "NETCoreSignalR.Tests\NETCoreSignalR.Tests.csproj", "{1B93C9FF-5FD1-4880-9DD3-C62F25A054CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreSignalR.Domain", "NETCoreSignalR.Domain\NETCoreSignalR.Domain.csproj", "{A22141B4-1805-46EE-A7F4-F6B93F898B0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreSignalR.Domain", "NETCoreSignalR.Domain\NETCoreSignalR.Domain.csproj", "{A22141B4-1805-46EE-A7F4-F6B93F898B0F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B41B8088-0D0A-4C7C-A8E7-6A44E0A52893}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "NETCoreSignalR.SPA", "NETCoreSignalR.SPA\NETCoreSignalR.SPA.njsproj", "{E34B5C37-C476-4295-ACA4-7B7C5E66DAE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A22141B4-1805-46EE-A7F4-F6B93F898B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E34B5C37-C476-4295-ACA4-7B7C5E66DAE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E34B5C37-C476-4295-ACA4-7B7C5E66DAE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E34B5C37-C476-4295-ACA4-7B7C5E66DAE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E34B5C37-C476-4295-ACA4-7B7C5E66DAE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

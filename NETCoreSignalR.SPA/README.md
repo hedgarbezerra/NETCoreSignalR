@@ -1,0 +1,3 @@
+w# NETCoreSignalR.SPA
+
+
