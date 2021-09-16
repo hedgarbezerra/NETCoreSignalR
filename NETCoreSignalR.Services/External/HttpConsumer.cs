@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +16,23 @@ namespace NETCoreSignalR.Services.External
         T Get<T>(string url);
         T Get<T>(string url, List<KeyValuePair<string, object>> param = null);
         Task<T> GetAsync<T>(string url);
+        Task<T> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null);
         T Post<T>(string url, List<KeyValuePair<string, object>> param);
         T Post<T>(string url, object param);
         Task<T> PostAsync<T>(string url, List<KeyValuePair<string, object>> param);
         Task<T> PostAsync<T>(string url, object param);
         T Put<T>(string url, List<KeyValuePair<string, object>> param);
         T Put<T>(string url, object param);
+        Task<T> PutAsync<T>(string url, List<KeyValuePair<string, object>> param);
+        Task<T> PutAsync<T>(string url, object param);
+        T Delete<T>(string url);
+        T Delete<T>(string url, List<KeyValuePair<string, object>> param = null);
+        Task<T> DeleteAsync<T>(string url);
+        Task<T> DeleteAsync<T>(string url, List<KeyValuePair<string, object>> param = null);
     }
 
+    //Excluded from code coverage due to inability to test the extension method 
+    [ExcludeFromCodeCoverage]
     public class HttpConsumer : IHttpConsumer
     {
         private readonly IRestClient _request;
@@ -112,8 +122,6 @@ namespace NETCoreSignalR.Services.External
 
             throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
         }
-
-
         public T Get<T>(string url, List<KeyValuePair<string, object>> param = null)
         {
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
@@ -177,6 +185,80 @@ namespace NETCoreSignalR.Services.External
             throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
         }
 
+        public Task<T> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<T> PutAsync<T>(string url, List<KeyValuePair<string, object>> param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = await _request.PutAsync<T>(request);
+
+            return response;
+        }
+
+        public async Task<T> PutAsync<T>(string url, object param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+
+            request.AddJsonBody(param);
+
+            var response = await _request.PutAsync<T>(request);
+
+            return response;
+        }
+
+        public T Delete<T>(string url)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+            var response = _request.Delete<T>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+
+            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+        }
+
+        public T Delete<T>(string url, List<KeyValuePair<string, object>> param = null)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = _request.Delete<T>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+
+            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+        }
+
+        public Task<T> DeleteAsync<T>(string url)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+            var response = _request.DeleteAsync<T>(request);
+
+            return response;
+        }
+
+        public Task<T> DeleteAsync<T>(string url, List<KeyValuePair<string, object>> param = null)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = _request.DeleteAsync<T>(request);
+
+            return response;
+        }
         public void AddCookies(List<Cookie> cookies)
         {
             this._request.CookieContainer = new CookieContainer();
@@ -192,5 +274,6 @@ namespace NETCoreSignalR.Services.External
         {
             this._request.AddDefaultHeader(header.Key, header.Value);
         }
+        
     }
 }

@@ -3,10 +3,12 @@ using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Repository.Configurations.EntityMapping;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace NETCoreSignalR.Repository.Configurations
 {
+    [ExcludeFromCodeCoverage]
     public class MyDbContext : DbContext
     {
         public MyDbContext()

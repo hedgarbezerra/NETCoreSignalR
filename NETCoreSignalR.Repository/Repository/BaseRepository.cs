@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Repository.Repository
 {
@@ -33,18 +34,24 @@ namespace NETCoreSignalR.Repository.Repository
             _dbContext = context;
         }
         public virtual T Add(T obj) => _dbContext.Add(obj).Entity;
+
+        public virtual async Task<T> AddAsync(T obj)
+        {
+           var result =  await _dbContext.AddAsync(obj);
+
+            return result.Entity;
+        }
         public virtual T Update(T obj)
         {
             _dbContext.Entry(obj).State = EntityState.Modified;
+
             return _dbContext.Update(obj).Entity;
         }
-
         public virtual void Delete(T obj)
         {
             _dbContext.Entry(obj).State = EntityState.Deleted;
             _dbContext.Remove(obj);
         }
-
         public virtual IQueryable<T> Get() => _dbContext.Set<T>().AsQueryable();
         public virtual ParallelQuery<T> GetParallel() => _dbContext.Set<T>().AsParallel();
 
@@ -85,11 +92,14 @@ namespace NETCoreSignalR.Repository.Repository
             return dados.AsParallel();
         }
         public virtual T Get(int id) => id <= 0 ? throw new ArgumentException("ID must be greater than 0.") : _dbContext.Set<T>().Find(id);
+        public virtual async Task<T> GetAsync(int id) => id <= 0 ? throw new ArgumentException("ID must be greater than 0.") : await _dbContext.Set<T>().FindAsync(id);
 
         public DbContext GetDbContext() => _dbContext;
 
         public void SaveChanges() => _dbContext.SaveChanges();
+        public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
         public void Dispose() => _dbContext.Dispose();
+        public async Task DisposeAsync() => await _dbContext.DisposeAsync();
 
     }
 }

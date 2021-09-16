@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace NETCoreSignalR.Repository.Configurations.EntityMapping
 {
+    // class created for training porpuses only
+    [ExcludeFromCodeCoverage]
     public class FluentConfiguration<T> :
         ITypeSelection<T>,
         ITableNameSelection<T>,
