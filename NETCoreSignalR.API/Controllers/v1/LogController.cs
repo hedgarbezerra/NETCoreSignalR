@@ -39,14 +39,14 @@ namespace NETCoreSignalR.API.Controllers
             var paginatedList = _loggingService.GetPaginatedList(route, query.PageIndex, query.PageSize);
 
             if (paginatedList.TotalCount <= 0)
-                return NotFound();
+                return NoContent();
 
             return Ok(paginatedList);
         }
 
         [HttpGet]
         [Route("get/{id}")]
-        [ProducesResponseType(typeof(PaginatedList<EventLog>), 200)]
+        [ProducesResponseType(typeof(EventLog), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 400)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
         public IActionResult GetById([FromQuery] int id)
@@ -54,7 +54,7 @@ namespace NETCoreSignalR.API.Controllers
             EventLog result = _loggingService.Get(id);
 
             if (result is null)
-                return NotFound();
+                return NoContent();
 
             return Ok(result);
         }

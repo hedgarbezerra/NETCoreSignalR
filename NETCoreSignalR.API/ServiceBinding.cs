@@ -31,8 +31,7 @@ namespace NETCoreSignalR.API
             var apiSettings = new APISettings(_config);
             #region Services
             services.AddTransient<ILoggingService, LogService>();
-            //services.AddTransient<IRestClient, RestClient>();
-            services.AddTransient<IHttpConsumer, HttpConsumer>();
+            services.AddTransient<IHttpConsumer, HttpConsumer>((sp) => new HttpConsumer(sp.GetRequiredService<IRestClient>(), DataFormat.Json));
             services.AddTransient<IAuthService, AuthenticationService>((_) => new AuthenticationService(apiSettings.JWTKey));
             #endregion
 

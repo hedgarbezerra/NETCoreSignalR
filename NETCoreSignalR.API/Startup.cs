@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NETCoreSignalR.Services.External;
 using NETCoreSignalR.Util.Configuration;
 using Newtonsoft.Json;
 using Serilog;
@@ -48,6 +49,7 @@ namespace NETCoreSignalR.API
             services.AddHttpContextAccessor();
 
             services.AddDirectoryBrowser();
+
 
             #region Setting json handler
             services.AddControllers()
@@ -100,6 +102,7 @@ namespace NETCoreSignalR.API
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -118,10 +121,21 @@ namespace NETCoreSignalR.API
                 };
             });
 
+            #endregion
+
+            #region Setting SignalR support
+
+            services.AddSignalR();
+            #endregion
+
+            #region CORS Setup
             services.AddCors(options =>
             {
                 options.AddPolicy("WebApp",
-                    builder => builder.WithOrigins("http://example.com").AllowAnyHeader());
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+                //options.AddPolicy("WebApp",
+                //    builder => builder.WithOrigins("http://example.com").AllowAnyHeader().AllowAnyMethod());
             });
             #endregion
 
@@ -179,6 +193,10 @@ namespace NETCoreSignalR.API
             });
             #endregion
 
+            #region Signal R Setup
+
+            app.UseSignalR(route => { route.MapHub<ChatHub>("/user-hub"); });
+            #endregion
             #region Setting up Azure Keyvault
 
             if (env.IsProduction())
@@ -199,6 +217,8 @@ namespace NETCoreSignalR.API
             app.UseCors();
 
             app.UseAuthorization();
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

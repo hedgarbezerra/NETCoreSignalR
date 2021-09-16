@@ -102,9 +102,9 @@ namespace NETCoreSignalR.API
         {
             var info = new OpenApiInfo()
             {
-                Title = "TalkingBook",
+                Title = "Pokechat",
                 Version = description.ApiVersion.ToString(),
-                Description = "TalkingBook API allowing chat between users and security with JWT",
+                Description = "Pokechat API allowing chat between users and security with JWT",
                 Contact = new OpenApiContact
                 {
                     Name = "Hedgar Bezerra",

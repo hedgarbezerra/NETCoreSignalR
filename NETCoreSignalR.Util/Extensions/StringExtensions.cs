@@ -14,5 +14,7 @@ namespace NETCoreSignalR.Util.Extensions
                 span[from..to].Fill(substitution);
             });  
         }
+
+        public static string EnumToString(this Enum @enum) => nameof(@enum);
     }
 }
