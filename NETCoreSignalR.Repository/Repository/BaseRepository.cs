@@ -2,6 +2,7 @@
 using NETCoreSignalR.Repository.Configurations;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -101,9 +102,13 @@ namespace NETCoreSignalR.Repository.Repository
 
         public DbContext GetDbContext() => _dbContext;
 
+        [ExcludeFromCodeCoverage]
         public void SaveChanges() => _dbContext.SaveChanges();
+        [ExcludeFromCodeCoverage]
         public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
+        [ExcludeFromCodeCoverage]
         public void Dispose() => _dbContext.Dispose();
+        [ExcludeFromCodeCoverage]
         public async Task DisposeAsync() => await _dbContext.DisposeAsync();
 
     }

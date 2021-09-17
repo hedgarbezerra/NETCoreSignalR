@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using FluentAssertions.Specialized;
+using Moq;
 using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;
@@ -9,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Tests.Services.Data
 {
@@ -73,6 +77,7 @@ namespace NETCoreSignalR.Tests.Services.Data
             Assert.IsNotNull(logs.FirstOrDefault());
             Assert.That(logs.FirstOrDefault().LogLevel == loglevel);
         }
+
         [Test]
         [TestCase(LogLevel.Error)]
         [TestCase(LogLevel.Information)]
@@ -127,6 +132,26 @@ namespace NETCoreSignalR.Tests.Services.Data
         {
             mqRepository.Setup(r => r.Get(It.IsAny<int>())).Throws(new ArgumentException());
             Assert.Throws<ArgumentException>(() => service.Get(id));
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(5)]
+        public async Task GetAsync_FilterLogById_ReturnsEventLog(int id)
+        {
+            var cTokenSource = new CancellationTokenSource(500);
+            var lookupTask = Task<EventLog>.Factory.StartNew(() =>
+            {
+                return new EventLog() { Id = id, LogLevel = LogLevel.Warning, Message = "Erro", CreatedTime = DateTime.UtcNow };
+            });
+            mqRepository.Setup(r => r.GetAsync(cTokenSource.Token, It.IsAny<int>()))
+                .Returns(lookupTask);
+
+            var logItem = await service.GetAsync(id, cTokenSource.Token);
+
+            Assert.IsNotNull(logItem);
+            Assert.AreEqual(id, logItem.Id);
+            Assert.AreNotEqual(logItem.CreatedTime, DateTime.MinValue);
         }
 
         [Test]

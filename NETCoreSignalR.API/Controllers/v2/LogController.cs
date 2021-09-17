@@ -37,8 +37,6 @@ namespace NETCoreSignalR.API.Controllers.v2
         {
             try
             {
-                await Task.Delay(5000);
-
                 EventLog result = await _loggingService.GetAsync(id, cancellationToken);
 
                 if (result is null)
