@@ -4,16 +4,10 @@ using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Domain.Model;
 using NETCoreSignalR.Services.Data;
 using NETCoreSignalR.Services.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NETCoreSignalR.API.Controllers
 {
-    //[ApiVersion("1.0", Deprecated = true)]
-    //[Authorize(Roles = "Administrator")]
-    [ApiVersion("1.0")]
+    [ApiVersion("1.0", Deprecated = true)]
     [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -28,7 +22,7 @@ namespace NETCoreSignalR.API.Controllers
             _loggingService = loggingService;
         }
 
-        [HttpGet]
+        [HttpGet, MapToApiVersion("2.0")]
         [Route("get")]
         [ProducesResponseType(typeof(PaginatedList<EventLog>), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 400)]
@@ -49,7 +43,7 @@ namespace NETCoreSignalR.API.Controllers
         [ProducesResponseType(typeof(EventLog), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 400)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
-        public IActionResult GetById([FromQuery] int id)
+        public IActionResult GetById(int id)
         {
             EventLog result = _loggingService.Get(id);
 

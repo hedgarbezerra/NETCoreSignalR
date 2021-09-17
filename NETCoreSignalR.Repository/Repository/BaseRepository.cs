@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Repository.Repository
@@ -20,10 +21,14 @@ namespace NETCoreSignalR.Repository.Repository
         ParallelQuery<T> GetParallel(Expression<Func<T, bool>> filter = null, Expression<Func<T, object>> order = null, int? count = 0, int? skip = 0, bool reverse = false);
         IQueryable<T> Get(Expression<Func<T, bool>> filter = null);
         IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Expression<Func<T, object>> order = null, int? count = 0, int? skip = 0, bool reverse = false);
-        T Get(int id);
+        T Get(params object [] id);
         DbContext GetDbContext();
         void SaveChanges();
         T Update(T obj);
+        Task<T> AddAsync(T obj);
+        Task DisposeAsync();
+        Task<T> GetAsync(CancellationToken cancellationToken, params object[] id);
+        Task SaveChangesAsync();
     }
 
     public abstract class BaseRepository<T> : IRepository<T> where T : class
@@ -91,8 +96,8 @@ namespace NETCoreSignalR.Repository.Repository
 
             return dados.AsParallel();
         }
-        public virtual T Get(int id) => id <= 0 ? throw new ArgumentException("ID must be greater than 0.") : _dbContext.Set<T>().Find(id);
-        public virtual async Task<T> GetAsync(int id) => id <= 0 ? throw new ArgumentException("ID must be greater than 0.") : await _dbContext.Set<T>().FindAsync(id);
+        public virtual T Get(params object[] param) => param?.Length < 0 ? throw new ArgumentException("ID can't be null or empty.") : _dbContext.Set<T>().Find(param);
+        public virtual async Task<T> GetAsync(CancellationToken cancellationToken, params object[] param) => param?.Length < 0 ? throw new ArgumentException("ID  can't be null or empty.") : await _dbContext.Set<T>().FindAsync(param, cancellationToken);
 
         public DbContext GetDbContext() => _dbContext;
 

@@ -49,7 +49,11 @@ namespace NETCoreSignalR.API
 
 
             #region Repositories
-            services.AddDbContext<MyDbContext>(opt => opt.UseSqlServer(apiSettings.ConnectionString));
+            services.AddDbContext<MyDbContext>(opt => 
+                opt.UseSqlServer(apiSettings.ConnectionString,
+                    options => { 
+                        options.MigrationsAssembly(typeof(MyDbContext).Assembly.FullName); 
+                    }));
 
             services.AddScoped<IRepository<EventLog>, LogRepository>();
             #endregion
