@@ -8,13 +8,14 @@ namespace NETCoreSignalR.Util.Extensions
     {
         public static string Mask(this string value, int from, int to, char substitution)
         {
+            if (value.Length < to || value.Length < from)
+                return value;
+
             return string.Create(value.Length, value, (span, str) => 
             {
                 value.AsSpan().CopyTo(span);
                 span[from..to].Fill(substitution);
             });  
         }
-
-        public static string EnumToString(this Enum @enum) => nameof(@enum);
     }
 }
