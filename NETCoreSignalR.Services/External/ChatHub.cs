@@ -28,9 +28,14 @@ namespace NETCoreSignalR.Services.External
             return Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         }
 
-        public Task LeaveRoom(string roomName)
+        public Task LeaveGroup(string roomName)
         {
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }
