@@ -18,21 +18,15 @@ using System.Threading.Tasks;
 
 namespace NETCoreSignalR.API
 {
-    public sealed class ServicesBinding
+    public static class ServicesBinding
     {
-        public ServicesBinding(IConfiguration configuration)
-        {
-            _config = configuration;
-        }
-        public IConfiguration _config { get; }
 
-        public void BindServices(IServiceCollection services)
+        public static void BindServices(this IServiceCollection services, IConfiguration config)
         {
-            var apiSettings = new APISettings(_config);
+            var apiSettings = new APISettings(config);
             #region Services
             services.AddTransient<ILoggingService, LogService>();
             services.AddTransient<IHttpConsumer, HttpConsumer>((sp) => new HttpConsumer(sp.GetRequiredService<IRestClient>(), DataFormat.Json));
-            services.AddTransient<IAuthService, AuthenticationService>((_) => new AuthenticationService(apiSettings.JWTKey));
             #endregion
 
             #region Helpers

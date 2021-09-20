@@ -139,8 +139,7 @@ namespace NETCoreSignalR.API
             });
             #endregion
 
-            ServicesBinding servicesBinder = new ServicesBinding(Configuration);
-            servicesBinder.BindServices(services);
+            services.BindServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
