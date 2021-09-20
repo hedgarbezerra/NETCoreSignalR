@@ -24,7 +24,7 @@ namespace NETCoreSignalR.Util.Configuration
         protected virtual string GetConfiguration(string configKey, string substitutionKey = "", bool shouldDecrypt = false)
         {
             var configValue = _config[configKey] ?? _config[substitutionKey];
-            if (shouldDecrypt && _encryption != null)
+            if (!string.IsNullOrEmpty(configValue) && shouldDecrypt && _encryption != null)
                 configValue = _encryption.Decrypt(configValue);
 
             return configValue;

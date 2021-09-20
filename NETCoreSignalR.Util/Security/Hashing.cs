@@ -30,7 +30,7 @@ namespace NETCoreSignalR.Util.Security
             if (string.IsNullOrEmpty(plainText))
                 throw new ArgumentNullException("The text can't be null nor empty.");
 
-            if (saltBytes == null)
+            if (saltBytes == null || saltBytes.Length <= 0)
             {
                 saltBytes = GenerateSaltBytes();
             }

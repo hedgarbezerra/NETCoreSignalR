@@ -20,7 +20,7 @@ namespace NETCoreSignalR.Tests.Util.Security
         }
 
         [Test]
-        public void ComputeHash()
+        public void ComputeHash_ValidHash_ReturnHashedString()
         {
             string plainText = "hashthis";
 
@@ -31,6 +31,29 @@ namespace NETCoreSignalR.Tests.Util.Security
             Assert.IsTrue(_hashing.VerifyHash(plainText, hashedText));
         }
 
+        [Test]
+        public void ComputeHash_EmptySaltBytes_GeneratesSaltAndReturnHashedString()
+        {
+            string plainText = "hashthis";
+            byte[] saltBytes = new byte[0];
+            var hashedText = _hashing.ComputeHash(plainText, saltBytes);
+
+            Assert.IsNotNull(hashedText);
+            Assert.IsNotEmpty(hashedText);
+            Assert.IsTrue(_hashing.VerifyHash(plainText, hashedText));
+        }
+
+        [Test]
+        public void ComputeHash_NullSaltBytes_GeneratesSaltAndReturnHashedString()
+        {
+            string plainText = "hashthis";
+
+            var hashedText = _hashing.ComputeHash(plainText, null);
+
+            Assert.IsNotNull(hashedText);
+            Assert.IsNotEmpty(hashedText);
+            Assert.IsTrue(_hashing.VerifyHash(plainText, hashedText));
+        }
         [Test]
         public void ComputeHash_EmptyString_ThrowsArgumentException()
         {
@@ -46,9 +69,17 @@ namespace NETCoreSignalR.Tests.Util.Security
         [Test]
         [TestCase("hashthat", "JpgVgabQhXcpy38k7OrUOR5sBj/PO/AS/CDRjsE55oxrwAXE0ig8")]
         [TestCase("hashthis", "hFxsrh/4e3/Out4C1dwz+xmcmk+PKOpCHk7SSfGOR1ucNBodNi8=")]
-        public void VerifyHash(string plainText, string hash)
+        public void VerifyHash_expectedHashAndPlainText_ReturnsTrue(string plainText, string hash)
         {
             Assert.IsTrue(_hashing.VerifyHash(plainText, hash));
+        }
+
+        [Test]
+        [TestCase("b2lvaW9pcXdlcXdl")]
+        [TestCase("cWl3dWVvcXdkanF3")]
+        public void VerifyHash_DifferentString_ReturnsFalse(string hash)
+        {
+            Assert.IsFalse(_hashing.VerifyHash("any", hash));
         }
 
         [Test]
@@ -66,23 +97,6 @@ namespace NETCoreSignalR.Tests.Util.Security
         public void VerifyHash_EmptyHashValue_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentNullException>(() => _hashing.VerifyHash("hashhash", ""));
-        }
-
-        private byte[] GenerateSaltBytes()
-        {
-            RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider();
-            int minSaltSize = 4;
-            int maxSaltSize = 8;
-
-            Random random = new Random();
-            int saltSize = random.Next(minSaltSize, maxSaltSize);
-
-            var saltBytes = new byte[saltSize];
-
-
-            rngProvider.GetNonZeroBytes(saltBytes);
-
-            return saltBytes;
         }
     }   
 }

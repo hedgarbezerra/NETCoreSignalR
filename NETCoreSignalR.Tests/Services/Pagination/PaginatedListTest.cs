@@ -14,8 +14,15 @@ namespace NETCoreSignalR.Tests.Services.Pagination
     [TestFixture]
     public class PaginatedListTest
     {
-        private MockRepository mqRepository = new MockRepository(MockBehavior.Default);
-        private Fixture _fixture = new Fixture();
+        private MockRepository mqRepository;
+        private Fixture _fixture;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            mqRepository = new MockRepository(MockBehavior.Default);
+            _fixture = new Fixture();
+        }
 
         [Test]
         [TestCase(0, 5)]

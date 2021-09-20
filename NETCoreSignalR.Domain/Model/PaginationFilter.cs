@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace NETCoreSignalR.Domain.Model
 {
+    [ExcludeFromCodeCoverage]
     public class PaginationFilter
     {
         public int PageIndex { get; set; }
