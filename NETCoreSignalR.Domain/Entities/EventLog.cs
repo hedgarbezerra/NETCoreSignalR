@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
@@ -33,6 +34,8 @@ namespace NETCoreSignalR.Domain.Entities
         //     If you have a pager, it goes off when one of these occurs.
         Fatal = 5
     }
+
+    [ExcludeFromCodeCoverage]
     public class EventLog
     {
         public int Id { get; set; }

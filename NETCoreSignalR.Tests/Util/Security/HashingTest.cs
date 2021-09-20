@@ -1,4 +1,5 @@
-﻿using NETCoreSignalR.Util.Security;
+﻿using FluentAssertions;
+using NETCoreSignalR.Util.Security;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -97,6 +98,18 @@ namespace NETCoreSignalR.Tests.Util.Security
         public void VerifyHash_EmptyHashValue_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentNullException>(() => _hashing.VerifyHash("hashhash", ""));
+        }
+
+        [Test]
+        [TestCase(4)]
+        [TestCase(9)]
+        public void GenerateRandomString_a_ReturnsStringWithDefinedLength(int stringLength)
+        {
+            char[] chars = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%&".ToCharArray();
+
+            var randomStr = _hashing.RandomString(stringLength);
+
+            randomStr.Should().NotBeNullOrEmpty().And.Match(x => x.IndexOfAny(chars) >= 0).And.HaveLength(stringLength);
         }
     }   
 }
