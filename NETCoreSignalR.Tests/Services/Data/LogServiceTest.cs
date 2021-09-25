@@ -108,11 +108,13 @@ namespace NETCoreSignalR.Tests.Services.Data
         {
             mqRepository.Setup(r => r.Get(It.IsAny<int>()))
                 .Returns(new EventLog() { Id = id, LogLevel = LogLevel.Warning, Message = "Erro", CreatedTime = DateTime.UtcNow });
-            var logItem = service.Get(id);
+            var logItemOption = service.Get(id);
+            var log = logItemOption.FirstOrDefault();
 
-            Assert.IsNotNull(logItem);
-            Assert.AreEqual(id, logItem.Id);
-            Assert.AreNotEqual(logItem.CreatedTime, DateTime.MinValue);
+            Assert.IsFalse(logItemOption.IsNone);
+            Assert.IsNotNull(log);
+            Assert.AreEqual(id, log.Id);
+            Assert.AreNotEqual(log.CreatedTime, DateTime.MinValue);
         }
 
         [Test]
@@ -120,9 +122,8 @@ namespace NETCoreSignalR.Tests.Services.Data
         [TestCase(35)]
         public void Get_FilterLogByNonExistingId_ReturnsNull(int id)
         {
-            var logItem = service.Get(id);
-
-            Assert.IsNull(logItem);
+            var logItemOption = service.Get(id);
+            Assert.IsTrue(logItemOption.IsNone);
         }
 
         [Test]
@@ -147,11 +148,13 @@ namespace NETCoreSignalR.Tests.Services.Data
             mqRepository.Setup(r => r.GetAsync(cTokenSource.Token, It.IsAny<int>()))
                 .Returns(lookupTask);
 
-            var logItem = await service.GetAsync(id, cTokenSource.Token);
+            var logItemOption = await service.GetAsync(id, cTokenSource.Token);
+            var log = logItemOption.FirstOrDefault();
 
-            Assert.IsNotNull(logItem);
-            Assert.AreEqual(id, logItem.Id);
-            Assert.AreNotEqual(logItem.CreatedTime, DateTime.MinValue);
+            Assert.IsTrue(logItemOption.IsSome);
+            Assert.IsNotNull(log);
+            Assert.AreEqual(id, log.Id);
+            Assert.AreNotEqual(log.CreatedTime, DateTime.MinValue);
         }
 
         [Test]

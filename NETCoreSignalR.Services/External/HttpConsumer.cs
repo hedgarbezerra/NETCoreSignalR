@@ -1,9 +1,11 @@
-﻿using RestSharp;
+﻿using LanguageExt;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Services.External
@@ -13,23 +15,24 @@ namespace NETCoreSignalR.Services.External
         void AddCookies(List<Cookie> cookies);
         void AddHeaders(KeyValuePair<string, string> header);
         void AddHeaders(List<KeyValuePair<string, string>> headers);
-        T Get<T>(string url);
-        T Get<T>(string url, List<KeyValuePair<string, object>> param = null);
-        Task<T> GetAsync<T>(string url);
-        Task<T> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null);
-        T Post<T>(string url, List<KeyValuePair<string, object>> param);
-        T Post<T>(string url, object param);
-        Task<T> PostAsync<T>(string url, List<KeyValuePair<string, object>> param);
-        Task<T> PostAsync<T>(string url, object param);
-        T Put<T>(string url, List<KeyValuePair<string, object>> param);
-        T Put<T>(string url, object param);
-        Task<T> PutAsync<T>(string url, List<KeyValuePair<string, object>> param);
-        Task<T> PutAsync<T>(string url, object param);
-        T Delete<T>(string url);
-        T Delete<T>(string url, List<KeyValuePair<string, object>> param = null);
-        Task<T> DeleteAsync<T>(string url);
-        Task<T> DeleteAsync<T>(string url, List<KeyValuePair<string, object>> param = null);
+        Option<T> Delete<T>(string url);
+        Option<T> Delete<T>(string url, List<KeyValuePair<string, object>> param = null);
+        Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default);
+        Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default, List<KeyValuePair<string, object>> param = null);
+        Option<T> Get<T>(string url);
+        Option<T> Get<T>(string url, List<KeyValuePair<string, object>> param = null);
+        Task<Option<T>> GetAsync<T>(string url, CancellationToken cancellationToken = default);
+        Task<Option<T>> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null, CancellationToken cancellationToken = default);
+        Option<T> Post<T>(string url, List<KeyValuePair<string, object>> param);
+        Option<T> Post<T>(string url, object param);
+        Task<Option<T>> PostAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default);
+        Task<Option<T>> PostAsync<T>(string url, object param, CancellationToken cancellationToken = default);
+        Option<T> Put<T>(string url, List<KeyValuePair<string, object>> param);
+        Option<T> Put<T>(string url, object param);
+        Task<Option<T>> PutAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default);
+        Task<Option<T>> PutAsync<T>(string url, object param, CancellationToken cancellationToken = default);
     }
+
 
     //Excluded from code coverage due to inability to test the extension method 
     [ExcludeFromCodeCoverage]
@@ -47,36 +50,26 @@ namespace NETCoreSignalR.Services.External
             _request = client;
             _defaultDataFormat = dataFormat;
         }
-        public T Get<T>(string url)
+        public Option<T> Get<T>(string url)
         {
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
             var response = _request.Get<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public T Post<T>(string url, object param)
+        public Option<T> Post<T>(string url, object param)
         {
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
             var response = _request.Post<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public T Post<T>(string url, List<KeyValuePair<string, object>> param)
+        public Option<T> Post<T>(string url, List<KeyValuePair<string, object>> param)
         {
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
 
@@ -84,30 +77,20 @@ namespace NETCoreSignalR.Services.External
 
             var response = _request.Post<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public T Put<T>(string url, object param)
+        public Option<T> Put<T>(string url, object param)
         {
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
             var response = _request.Put<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public T Put<T>(string url, List<KeyValuePair<string, object>> param)
+        public Option<T> Put<T>(string url, List<KeyValuePair<string, object>> param)
         {
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
 
@@ -115,14 +98,9 @@ namespace NETCoreSignalR.Services.External
 
             var response = _request.Put<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
-        public T Get<T>(string url, List<KeyValuePair<string, object>> param = null)
+        public Option<T> Get<T>(string url, List<KeyValuePair<string, object>> param = null)
         {
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
@@ -133,99 +111,97 @@ namespace NETCoreSignalR.Services.External
 
             var response = _request.Get<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
 
-        public async Task<T> GetAsync<T>(string url)
+        public async Task<Option<T>> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
-            var response = await _request.ExecuteGetAsync<T>(request);
+            var response = await _request.ExecuteGetAsync<T>(request, cancellationToken);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
-        public async Task<T> PostAsync<T>(string url, object param)
+        public async Task<Option<T>> PostAsync<T>(string url, object param, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
-            var response = await _request.ExecutePostAsync<T>(request);
+            var response = await _request.ExecutePostAsync<T>(request, cancellationToken);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
-        public async Task<T> PostAsync<T>(string url, List<KeyValuePair<string, object>> param)
+        public async Task<Option<T>> PostAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecutePostAsync<T>(request);
+            var response = await _request.ExecutePostAsync<T>(request, cancellationToken);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public Task<T> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null)
+        public async Task<Option<T>> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
+            var request = new RestRequest(url, Method.GET, _defaultDataFormat);
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = await _request.ExecuteGetAsync<T>(request, cancellationToken);
+
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public async Task<T> PutAsync<T>(string url, List<KeyValuePair<string, object>> param)
+        public async Task<Option<T>> PutAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.PutAsync<T>(request);
+            var response = await _request.PutAsync<T>(request, cancellationToken);
 
-            return response;
+            return response ?? Option<T>.None;
         }
 
-        public async Task<T> PutAsync<T>(string url, object param)
+        public async Task<Option<T>> PutAsync<T>(string url, object param, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
 
             request.AddJsonBody(param);
 
-            var response = await _request.PutAsync<T>(request);
+            var response = await _request.PutAsync<T>(request, cancellationToken);
 
-            return response;
+            return response ?? Option<T>.None;
         }
 
-        public T Delete<T>(string url)
+        public Option<T> Delete<T>(string url)
         {
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
             var response = _request.Delete<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public T Delete<T>(string url, List<KeyValuePair<string, object>> param = null)
+        public Option<T> Delete<T>(string url, List<KeyValuePair<string, object>> param = null)
         {
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
 
@@ -233,47 +209,48 @@ namespace NETCoreSignalR.Services.External
 
             var response = _request.Delete<T>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            throw new Exception($"Something went wrong while connecting to {response.ResponseUri}");
+            return response.IsSuccessful ? response.Data : Option<T>.None;
         }
 
-        public Task<T> DeleteAsync<T>(string url)
+        public async Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-            var response = _request.DeleteAsync<T>(request);
+            var response = await _request.DeleteAsync<T>(request);
 
-            return response;
+            return response ?? Option<T>.None;
         }
 
-        public Task<T> DeleteAsync<T>(string url, List<KeyValuePair<string, object>> param = null)
+        public async Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default, List<KeyValuePair<string, object>> param = null)
         {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = _request.DeleteAsync<T>(request);
+            var response = await _request.DeleteAsync<T>(request);
 
-            return response;
+            return response ?? Option<T>.None;
         }
         public void AddCookies(List<Cookie> cookies)
         {
-            this._request.CookieContainer = new CookieContainer();
+            _request.CookieContainer = new CookieContainer();
 
-            cookies.ForEach(cookie => this._request.CookieContainer.Add(cookie));
+            cookies.ForEach(cookie => _request.CookieContainer.Add(cookie));
         }
 
         public void AddHeaders(List<KeyValuePair<string, string>> headers)
         {
-            headers.ForEach(header => this._request.AddDefaultHeader(header.Key, header.Value));
+            headers.ForEach(header => _request.AddDefaultHeader(header.Key, header.Value));
         }
         public void AddHeaders(KeyValuePair<string, string> header)
         {
-            this._request.AddDefaultHeader(header.Key, header.Value);
+            _request.AddDefaultHeader(header.Key, header.Value);
         }
-        
+
     }
 }

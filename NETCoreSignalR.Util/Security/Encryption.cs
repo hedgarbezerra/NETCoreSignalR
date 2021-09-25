@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dawn;
+using Microsoft.Extensions.Configuration;
 using NETCoreSignalR.Util.Configuration;
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,10 @@ namespace NETCoreSignalR.Util.Security
 
         public string Decrypt(string value)
         {
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentNullException("The value to decrypt can't be null nor empty.");
+            Guard.Argument(value)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
 
             var ivAndCipherText = Convert.FromBase64String(value);
             using var aes = Aes.Create();
@@ -41,9 +44,11 @@ namespace NETCoreSignalR.Util.Security
 
         public string Encrypt(string value)
         {
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentNullException("The value to encrypt can't be null nor empty.");
-
+            Guard.Argument(value)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
+            
             using var aes = Aes.Create();
             aes.Key = _key;
             aes.GenerateIV();

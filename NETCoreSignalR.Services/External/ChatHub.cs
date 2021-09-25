@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,14 +7,19 @@ using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Services.External
 {
+    //[Authorize]
     public class ChatHub : Hub
     {
         public async Task SendMessage(string user, string message, string room, bool join)
         {
             if (join)
             {
-                await JoinRoom(room).ConfigureAwait(false);
-                await Clients.Group(room).SendAsync("ReceiveMessage", user, " joined to " + room).ConfigureAwait(true);
+                await AddToGroup(room).ConfigureAwait(false);
+                await Clients.Group(room).SendAsync("ReceiveMessage", new
+                {
+                    Sender = Context.User.Identity.Name,
+                    Message = message
+                }).ConfigureAwait(true);
 
             }
             else
@@ -22,16 +28,20 @@ namespace NETCoreSignalR.Services.External
 
             }
         }
-
-        public Task JoinRoom(string roomName)
+        public async Task AddToGroup(string groupName)
         {
-            return Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+            await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId}/{Context.User.Identity.Name} has joined the group {groupName}.");
         }
 
-        public Task LeaveGroup(string roomName)
+        public async Task RemoveFromGroup(string groupName)
         {
-            return Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+            await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
         }
+
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");

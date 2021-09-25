@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dawn;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,18 +19,22 @@ namespace NETCoreSignalR.Util.Security
         private readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();
         public string ComputeHash(string plainText)
         {
-            if (string.IsNullOrEmpty(plainText))
-                throw new ArgumentNullException("The text can't be null nor empty.");
 
+            Guard.Argument(plainText)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
             byte[] saltBytes = GenerateSaltBytes();
 
             return ComputeHash(plainText, saltBytes);
         }
         public string ComputeHash(string plainText, byte[] saltBytes = null)
         {
-            if (string.IsNullOrEmpty(plainText))
-                throw new ArgumentNullException("The text can't be null nor empty.");
 
+            Guard.Argument(plainText)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
             if (saltBytes == null || saltBytes.Length <= 0)
             {
                 saltBytes = GenerateSaltBytes();
@@ -67,8 +72,15 @@ namespace NETCoreSignalR.Util.Security
 
         public bool VerifyHash(string plainText, string hashValue)
         {
-            if (string.IsNullOrEmpty(plainText) || string.IsNullOrEmpty(hashValue))
-                throw new ArgumentNullException("The text neither the hash can be null nor empty.");
+            Guard.Argument(plainText)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
+
+            Guard.Argument(hashValue)
+                .NotNull()
+                .NotWhiteSpace()
+                .NotEmpty();
 
             byte[] hashWithSaltBytes = Convert.FromBase64String(hashValue);
 

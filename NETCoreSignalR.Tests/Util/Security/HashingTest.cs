@@ -58,13 +58,13 @@ namespace NETCoreSignalR.Tests.Util.Security
         [Test]
         public void ComputeHash_EmptyString_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => _hashing.ComputeHash(""));
+            Assert.Throws<ArgumentException>(() => _hashing.ComputeHash(""));
         }
 
         [Test]
         public void ComputeHashWithSaltyBytes_EmptyString_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => _hashing.ComputeHash("", null));
+            Assert.Throws<ArgumentException>(() => _hashing.ComputeHash("", null));
         }
 
         [Test]
@@ -86,18 +86,18 @@ namespace NETCoreSignalR.Tests.Util.Security
         [Test]
         public void VerifyHash_TextAndHashEmpty_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => _hashing.VerifyHash("", ""));
+            Assert.Throws<ArgumentException>(() => _hashing.VerifyHash("", ""));
         }
 
         [Test]
         public void VerifyHash_EmptyText_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => _hashing.VerifyHash("", "340Q230Y489IQJEW"));
+            Assert.Throws<ArgumentException>(() => _hashing.VerifyHash("", "340Q230Y489IQJEW"));
         }
         [Test]
         public void VerifyHash_EmptyHashValue_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => _hashing.VerifyHash("hashhash", ""));
+            Assert.Throws<ArgumentException>(() => _hashing.VerifyHash("hashhash", ""));
         }
 
         [Test]

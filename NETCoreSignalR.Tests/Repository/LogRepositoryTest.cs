@@ -42,10 +42,10 @@ namespace NETCoreSignalR.Tests.Repository
 
 
         [Test]
-        public void GetParallel_AllEventLogs_ReturnsEventLogs()
+        public async Task GetParallel_AllEventLogs_ReturnsEventLogs()
         {
             //act   
-            AddLogsToContext();
+            await AddLogsToContext();
 
             var logs = _repo.GetParallel();
             logs.Should().NotBeNullOrEmpty().And.HaveCount(2);
@@ -59,9 +59,9 @@ namespace NETCoreSignalR.Tests.Repository
             logs.Should().NotBeNull().And.BeEmpty();
         }
         [Test]
-        public void GetParallel_FilteredByDelegate_ReturnsFilteredEventLogs()
+        public async Task GetParallel_FilteredByDelegate_ReturnsFilteredEventLogs()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime < DateTime.Now);
 
             Assert.IsNotNull(logs);
@@ -70,22 +70,20 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void GetParallel_FilteredByDelegate_ReturnsEmptyQueryable()
+        public async Task GetParallel_FilteredByDelegate_ReturnsEmptyQueryable()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime > DateTime.Now);
-
             Assert.IsNotNull(logs);
             Assert.IsEmpty(logs);
         }
 
         [Test]
-        public void GetParallel_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsOldestToNewest()
+        public async Task GetParallel_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsOldestToNewest()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime);
             var userOld = logs.First();
-
             Assert.IsNotNull(logs);
             Assert.IsNotEmpty(logs);
             Assert.IsNotNull(userOld);
@@ -93,12 +91,11 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void GetParallel_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsNewestToOldest()
+        public async Task GetParallel_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsNewestToOldest()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, reverse: true);
             var userOld = logs.First();
-
             Assert.IsNotNull(logs);
             Assert.IsNotEmpty(logs);
             Assert.IsNotNull(userOld);
@@ -106,24 +103,22 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void GetParallel_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsNoRecord()
+        public async Task GetParallel_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsNoRecord()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, 1, 1, true);
             var userOld = logs.FirstOrDefault();
-
             Assert.IsNotNull(logs);
             Assert.IsEmpty(logs);
             Assert.IsNull(userOld);
         }
 
         [Test]
-        public void GetParallel_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsSingeRecord()
+        public async Task GetParallel_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsSingeRecord()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.GetParallel(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, 2, 1, true);
             var log = logs.FirstOrDefault();
-
             Assert.IsNotNull(logs);
             Assert.IsNotEmpty(logs);
             Assert.IsNotNull(log);
@@ -131,10 +126,10 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_AllEventLogs_ReturnsEventLogs()
+        public async Task Get_AllEventLogs_ReturnsEventLogs()
         {
             //act   
-            AddLogsToContext();
+            await AddLogsToContext();
 
             var logs = _repo.Get();
 
@@ -152,9 +147,9 @@ namespace NETCoreSignalR.Tests.Repository
         [Test]
         [TestCase(1)]
         [TestCase(2)]
-        public void Get_FilteredById_ReturnsSingleEventLog(int id)
+        public async Task Get_FilteredById_ReturnsSingleEventLog(int id)
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var log = _repo.Get(id);
 
             log.Should().NotBeNull();
@@ -164,14 +159,20 @@ namespace NETCoreSignalR.Tests.Repository
         [Test]
         [TestCase(5)]
         [TestCase(8)]
-        public void Get_FilteredById_ReturnsNull(int id)
+        public async Task Get_FilteredById_ReturnsNull(int id)
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.Get(id);
 
             Assert.IsNull(logs);
         }
-
+        [Test]
+        [TestCase(5)]
+        [TestCase(8)]
+        public void Get_FilteredById_Throws(int id)
+        {
+            _repo.Invoking(x => x.Get(id, null)).Should().Throw<ArgumentException>();
+        }
         [Test]
         public void Get_FilteredByInvalidId_ThrowsArgumentException()
         {
@@ -184,9 +185,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredByDelegate_ReturnsFilteredEventLogs()
+        public async Task Get_FilteredByDelegate_ReturnsFilteredEventLogs()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.Get(x => x.CreatedTime < DateTime.Now);
 
             Assert.IsNotNull(logs);
@@ -195,9 +196,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredByDelegate_ReturnsEmptyQueryable()
+        public async Task Get_FilteredByDelegate_ReturnsEmptyQueryable()
         {
-            AddLogsToContext();
+           await AddLogsToContext();
             var logs = _repo.Get(x => x.CreatedTime > DateTime.Now);
 
             Assert.IsNotNull(logs);
@@ -205,9 +206,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsOldestToNewest()
+        public async Task Get_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsOldestToNewest()
         {
-            AddLogsToContext();
+            await AddLogsToContext ();
             var logs = _repo.Get(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime);
             var userOld = logs.First();
 
@@ -218,9 +219,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsNewestToOldest()
+        public async Task Get_FilteredAndOrderedByRegisteredDate_ReturnsOrderedRecordsNewestToOldest()
         {
-            AddLogsToContext();
+            await AddLogsToContext ();
             var logs = _repo.Get(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, reverse: true);
             var userOld = logs.First();
 
@@ -231,9 +232,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsNoRecord()
+        public async Task Get_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsNoRecord()
         {
-            AddLogsToContext();
+            await AddLogsToContext ();
             var logs = _repo.Get(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, 1, 1, true);
             var userOld = logs.FirstOrDefault();
 
@@ -243,9 +244,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsSingeRecord()
+        public async Task Get_FilteredAndOrderedWithLimitAndSkippedRecords_ReturnsSingeRecord()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.Get(x => x.CreatedTime < DateTime.Now, c => c.CreatedTime, 2, 1, true);
             var log = logs.FirstOrDefault();
 
@@ -256,9 +257,9 @@ namespace NETCoreSignalR.Tests.Repository
         }
 
         [Test]
-        public void Get_FilteredAndOrderedWithNoMatches_ReturnsEmpty()
+        public async Task Get_FilteredAndOrderedWithNoMatches_ReturnsEmpty()
         {
-            AddLogsToContext();
+            await AddLogsToContext();
             var logs = _repo.Get(x => x.CreatedTime > DateTime.Now, c => c.CreatedTime);
 
             Assert.IsNotNull(logs);
@@ -268,7 +269,7 @@ namespace NETCoreSignalR.Tests.Repository
         [Test]
         public async Task GetAsync_FilterById_ReturnsSingleLog()
         {
-            AddLogsToContext();
+           await AddLogsToContext();
 
             var cTokenSource = new CancellationTokenSource(500);
             var log = await _repo.GetAsync(cTokenSource.Token, 1);
@@ -281,15 +282,13 @@ namespace NETCoreSignalR.Tests.Repository
         [Test]
         [TestCase(1)]
         [TestCase(2)]
-        public void Delete_DeletingEventLogs_EventLogDeletedFromContext(int id)
+        public async Task Delete_DeletingEventLogs_EventLogDeletedFromContext(int id)
         {
-            AddLogsToContext();
-
+            await AddLogsToContext();
             var log = _repo.Get(id);
             _repo.Delete(log);
             _repo.SaveChanges();
-
-            Assert.That(!_context.Logs.Any(x => x.Id == id));
+             Assert.That(!_context.Logs.Any(x => x.Id == id));
         }
 
         [Test]

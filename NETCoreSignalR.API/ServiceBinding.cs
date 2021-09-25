@@ -7,6 +7,7 @@ using NETCoreSignalR.Repository.Configurations;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;
 using NETCoreSignalR.Services.External;
+using NETCoreSignalR.Services.External.PokeAPI;
 using NETCoreSignalR.Services.Pagination;
 using NETCoreSignalR.Util.Configuration;
 using NETCoreSignalR.Util.Security;
@@ -26,7 +27,10 @@ namespace NETCoreSignalR.API
             var apiSettings = new APISettings(config);
             #region Services
             services.AddTransient<ILoggingService, LogService>();
-            services.AddTransient<IHttpConsumer, HttpConsumer>((sp) => new HttpConsumer(sp.GetRequiredService<IRestClient>(), DataFormat.Json));
+
+            services.AddTransient<IRestClient, RestClient>();
+            services.AddScoped<IHttpConsumer, HttpConsumer>((sp) => new HttpConsumer(sp.GetRequiredService<IRestClient>(), DataFormat.Json));
+            services.AddScoped<IPokeAPIConsumer, PokeAPIConsumer>();
             #endregion
 
             #region Helpers

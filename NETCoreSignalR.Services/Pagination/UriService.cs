@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using Dawn;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,8 +16,10 @@ namespace NETCoreSignalR.Services.Pagination
         private readonly string _baseUri;
         public UriService(string baseUri)
         {
-            if (string.IsNullOrEmpty(baseUri) || string.IsNullOrWhiteSpace(baseUri))
-                throw new ArgumentException($"the {typeof(string)} for base URI can't be empty.");
+            Guard.Argument(baseUri, nameof(baseUri))
+                .NotNull()
+                .NotEmpty($"the {typeof(string)} for base URI can't be empty.")
+                .NotWhiteSpace();
 
             _baseUri = baseUri;
         }
@@ -25,6 +28,7 @@ namespace NETCoreSignalR.Services.Pagination
             var _endpointUri = new Uri(string.Concat(_baseUri, route));
             var modifiedUri = QueryHelpers.AddQueryString(_endpointUri.ToString(), "pageIndex", pageIndex.ToString());
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", pageSize.ToString());
+
             return new Uri(modifiedUri);
         }
 

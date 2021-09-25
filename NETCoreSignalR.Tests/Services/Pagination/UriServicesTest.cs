@@ -42,10 +42,14 @@ namespace NETCoreSignalR.Tests.Services.Pagination
         [Test]
         [TestCase("")]
         [TestCase(" ")]
-        [TestCase(null)]
-        public void UriService_Constructing_EmptyOrNullBaseUri(string baseURI)
+        public void UriService_Constructing_EmptyBaseUri(string baseURI)
         {
             Assert.Throws<ArgumentException>(() => new UriService(baseURI));
+        }
+        [Test]
+        public void UriService_Constructing_nullBaseUri()
+        {
+            Assert.Throws<ArgumentNullException>(() => new UriService(null));
         }
 
         [Test]

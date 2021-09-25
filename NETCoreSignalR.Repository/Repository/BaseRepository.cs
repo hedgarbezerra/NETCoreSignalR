@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dawn;
+using Microsoft.EntityFrameworkCore;
 using NETCoreSignalR.Repository.Configurations;
 using System;
 using System.Collections.Generic;
@@ -97,9 +98,18 @@ namespace NETCoreSignalR.Repository.Repository
 
             return dados.AsParallel();
         }
-        public virtual T Get(params object[] param) => param?.Length < 0 ? throw new ArgumentException("ID can't be null or empty.") : _dbContext.Set<T>().Find(param);
-        public virtual async Task<T> GetAsync(CancellationToken cancellationToken, params object[] param) => param?.Length < 0 ? throw new ArgumentException("ID  can't be null or empty.") : await _dbContext.Set<T>().FindAsync(param, cancellationToken);
+        public virtual T Get(params object[] param) 
+        {
+            Guard.Argument(param, nameof(param)).NotEmpty().DoesNotContainNull();
 
+            return _dbContext.Set<T>().Find(param);
+        }
+        public virtual async Task<T> GetAsync(CancellationToken cancellationToken, params object[] param)
+        {
+            Guard.Argument(param, nameof(param)).NotEmpty().DoesNotContainNull();
+
+            return await _dbContext.Set<T>().FindAsync(param, cancellationToken);
+        }
         public DbContext GetDbContext() => _dbContext;
 
         [ExcludeFromCodeCoverage]

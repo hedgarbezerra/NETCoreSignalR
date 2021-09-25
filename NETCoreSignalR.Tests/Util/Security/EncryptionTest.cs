@@ -36,7 +36,7 @@ namespace NETCoreSignalR.Tests.Util.Security
         [Test]
         public void Encrypt_EmptyString_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => encryption.Encrypt(string.Empty));
+            Assert.Throws<ArgumentException>(() => encryption.Encrypt(string.Empty));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace NETCoreSignalR.Tests.Util.Security
         [Test]
         public void Decrypt_EmptyString_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => encryption.Decrypt(string.Empty));
+            Assert.Throws<ArgumentException>(() => encryption.Decrypt(string.Empty));
 
         }
 }
