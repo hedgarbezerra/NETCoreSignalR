@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Model.PokeAPI;
 using NETCoreSignalR.Services.Data;
+using NETCoreSignalR.Services.External.PokeAPI;
 using NETCoreSignalR.Services.Pagination;
 using System;
 using System.Collections.Generic;
@@ -18,12 +20,10 @@ namespace NETCoreSignalR.API.Controllers.v2
     [ApiController]
     public class LogController : ControllerBase
     {
-        public IUriService _uriService { get; }
-        public ILoggingService _loggingService { get; }
+        private readonly ILoggingService _loggingService;
 
-        public LogController(IUriService uriService, ILoggingService loggingService)
+        public LogController(ILoggingService loggingService)
         {
-            _uriService = uriService;
             _loggingService = loggingService;
         }
 
@@ -37,18 +37,14 @@ namespace NETCoreSignalR.API.Controllers.v2
         {
             try
             {
-                EventLog result = await _loggingService.GetAsync(id, cancellationToken);
+                var logOption = await _loggingService.GetAsync(id, cancellationToken);
 
-                if (result is null)
-                    return NoContent();
-
-                return Ok(result);
+                return logOption.Match<IActionResult>(log => Ok(log), () => NoContent());
             }
             catch (TaskCanceledException ex)
             {
                 return Ok(ex);
             }
-
         }
     }
 }

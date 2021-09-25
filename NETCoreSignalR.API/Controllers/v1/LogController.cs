@@ -42,15 +42,13 @@ namespace NETCoreSignalR.API.Controllers
         [Route("get/{id}")]
         [ProducesResponseType(typeof(EventLog), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 400)]
+        [ProducesResponseType(typeof(ProblemDetails), 204)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
         public IActionResult GetById(int id)
         {
-            EventLog result = _loggingService.Get(id);
+            var logOption = _loggingService.Get(id);
 
-            if (result is null)
-                return NoContent();
-
-            return Ok(result);
+            return logOption.Match<IActionResult>(log => Ok(log), () => NoContent());
         }
     }
 }
