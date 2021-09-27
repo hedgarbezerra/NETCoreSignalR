@@ -50,55 +50,14 @@ namespace NETCoreSignalR.Services.External
             _request = client;
             _defaultDataFormat = dataFormat;
         }
+
         public Option<T> Get<T>(string url)
         {
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
-            var response = _request.Get<T>(request);
+            var response = _request.Execute<T>(request, Method.GET);
 
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-
-        public Option<T> Post<T>(string url, object param)
-        {
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-            request.AddJsonBody(param);
-
-            var response = _request.Post<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-
-        public Option<T> Post<T>(string url, List<KeyValuePair<string, object>> param)
-        {
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-
-            param.ForEach(p => request.AddParameter(p.Key, p.Value));
-
-            var response = _request.Post<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-
-        public Option<T> Put<T>(string url, object param)
-        {
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-            request.AddJsonBody(param);
-
-            var response = _request.Put<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-
-        public Option<T> Put<T>(string url, List<KeyValuePair<string, object>> param)
-        {
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-
-            param.ForEach(p => request.AddParameter(p.Key, p.Value));
-
-            var response = _request.Put<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
         public Option<T> Get<T>(string url, List<KeyValuePair<string, object>> param = null)
         {
@@ -109,11 +68,71 @@ namespace NETCoreSignalR.Services.External
                 param.ForEach(p => request.AddParameter(p.Key, p.Value, ParameterType.GetOrPost));
             }
 
-            var response = _request.Get<T>(request);
+            var response = _request.Execute<T>(request, Method.GET);
 
-            return response.IsSuccessful ? response.Data : Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
+        public Option<T> Post<T>(string url, object param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+            request.AddJsonBody(param);
+
+            var response = _request.Execute<T>(request, Method.POST);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+
+        public Option<T> Post<T>(string url, List<KeyValuePair<string, object>> param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = _request.Post<T>(request);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+
+        public Option<T> Put<T>(string url, object param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+            request.AddJsonBody(param);
+
+            var response = _request.Execute<T>(request, Method.PUT);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+
+        public Option<T> Put<T>(string url, List<KeyValuePair<string, object>> param)
+        {
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = _request.Execute<T>(request, Method.PUT);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+        
+        public Option<T> Delete<T>(string url)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+            var response = _request.Execute<T>(request, Method.DELETE);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+
+        public Option<T> Delete<T>(string url, List<KeyValuePair<string, object>> param = null)
+        {
+            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = _request.Execute<T>(request, Method.DELETE);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
 
         public async Task<Option<T>> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
@@ -122,34 +141,9 @@ namespace NETCoreSignalR.Services.External
 
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
-            var response = await _request.ExecuteGetAsync<T>(request, cancellationToken);
+            var response = await _request.ExecuteAsync<T>(request, Method.GET, cancellationToken);
 
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-        public async Task<Option<T>> PostAsync<T>(string url, object param, CancellationToken cancellationToken = default)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                cancellationToken.ThrowIfCancellationRequested();
-
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-            request.AddJsonBody(param);
-
-            var response = await _request.ExecutePostAsync<T>(request, cancellationToken);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-        public async Task<Option<T>> PostAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                cancellationToken.ThrowIfCancellationRequested();
-
-            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
-
-            param.ForEach(p => request.AddParameter(p.Key, p.Value));
-
-            var response = await _request.ExecutePostAsync<T>(request, cancellationToken);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
         public async Task<Option<T>> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null, CancellationToken cancellationToken = default)
@@ -160,9 +154,36 @@ namespace NETCoreSignalR.Services.External
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecuteGetAsync<T>(request, cancellationToken);
+            var response = await _request.ExecuteAsync<T>(request, Method.GET, cancellationToken);
 
-            return response.IsSuccessful ? response.Data : Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+
+        public async Task<Option<T>> PostAsync<T>(string url, object param, CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+            request.AddJsonBody(param);
+
+            var response = await _request.ExecuteAsync<T>(request, Method.POST, cancellationToken);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
+        }
+        
+        public async Task<Option<T>> PostAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+
+            var request = new RestRequest(url, Method.POST, _defaultDataFormat);
+
+            param.ForEach(p => request.AddParameter(p.Key, p.Value));
+
+            var response = await _request.ExecuteAsync<T>(request, Method.POST, cancellationToken);
+
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
         public async Task<Option<T>> PutAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default)
@@ -174,9 +195,9 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.PutAsync<T>(request, cancellationToken);
+            var response = await _request.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
 
-            return response ?? Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
         public async Task<Option<T>> PutAsync<T>(string url, object param, CancellationToken cancellationToken = default)
@@ -188,28 +209,9 @@ namespace NETCoreSignalR.Services.External
 
             request.AddJsonBody(param);
 
-            var response = await _request.PutAsync<T>(request, cancellationToken);
+            var response = await _request.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
 
-            return response ?? Option<T>.None;
-        }
-
-        public Option<T> Delete<T>(string url)
-        {
-            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-            var response = _request.Delete<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
-        }
-
-        public Option<T> Delete<T>(string url, List<KeyValuePair<string, object>> param = null)
-        {
-            var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-
-            param.ForEach(p => request.AddParameter(p.Key, p.Value));
-
-            var response = _request.Delete<T>(request);
-
-            return response.IsSuccessful ? response.Data : Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
         public async Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default)
@@ -218,9 +220,9 @@ namespace NETCoreSignalR.Services.External
                 cancellationToken.ThrowIfCancellationRequested();
 
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-            var response = await _request.DeleteAsync<T>(request);
+            var response = await _request.ExecuteAsync<T>(request, Method.DELETE);
 
-            return response ?? Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
 
         public async Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default, List<KeyValuePair<string, object>> param = null)
@@ -232,10 +234,11 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.DeleteAsync<T>(request);
+            var response = await _request.ExecuteAsync<T>(request, Method.DELETE);
 
-            return response ?? Option<T>.None;
+            return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
+
         public void AddCookies(List<Cookie> cookies)
         {
             _request.CookieContainer = new CookieContainer();
