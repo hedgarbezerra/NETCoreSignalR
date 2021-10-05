@@ -1,16 +1,12 @@
 ﻿using Dawn;
 using Microsoft.AspNetCore.WebUtilities;
+using NETCoreSignalR.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NETCoreSignalR.Services.Pagination
-{
-    public interface IUriService
-    {
-        Uri GetPageUri(int pageIndex, int pageSize, string route);
-        Uri GetUri(string route);
-    }
+{    
     public class UriService : IUriService
     {
         private readonly string _baseUri;

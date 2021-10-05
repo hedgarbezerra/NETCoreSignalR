@@ -2,6 +2,7 @@
 using FluentAssertions.Specialized;
 using Moq;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;
 using NETCoreSignalR.Services.Pagination;

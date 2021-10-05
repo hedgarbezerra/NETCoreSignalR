@@ -1,9 +1,10 @@
-﻿using System;
+﻿using NETCoreSignalR.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NETCoreSignalR.Services.Pagination
+namespace NETCoreSignalR.Domain.Model
 {
     public class PaginatedList<T>
     {

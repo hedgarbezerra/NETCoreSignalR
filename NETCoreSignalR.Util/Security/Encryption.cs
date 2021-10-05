@@ -1,5 +1,6 @@
 ﻿using Dawn;
 using Microsoft.Extensions.Configuration;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Util.Configuration;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,6 @@ using System.Text;
 
 namespace NETCoreSignalR.Util.Security
 {
-    public interface IEncryption
-    {
-        string Encrypt(string plainText);
-        string Decrypt(string cipherText);
-    }
-
     public class Encryption : IEncryption
     {
         public Encryption(string encryptionKey)

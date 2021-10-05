@@ -1,4 +1,5 @@
 ﻿using Dawn;
+using NETCoreSignalR.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -6,14 +7,6 @@ using System.Text;
 
 namespace NETCoreSignalR.Util.Security
 {
-
-    public interface IHashing
-    {
-        string ComputeHash(string plainText, byte[] saltBytes = null);
-        string ComputeHash(string plainText);
-        bool VerifyHash(string plainText, string hashValue);
-    }
-
     public class Hashing : IHashing
     {
         private readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();

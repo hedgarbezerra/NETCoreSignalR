@@ -1,4 +1,6 @@
-﻿using LanguageExt;
+﻿using Dawn;
+using LanguageExt;
+using NETCoreSignalR.Domain.Interfaces;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -10,43 +12,24 @@ using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Services.External
 {
-    public interface IHttpConsumer
-    {
-        void AddCookies(List<Cookie> cookies);
-        void AddHeaders(KeyValuePair<string, string> header);
-        void AddHeaders(List<KeyValuePair<string, string>> headers);
-        Option<T> Delete<T>(string url);
-        Option<T> Delete<T>(string url, List<KeyValuePair<string, object>> param = null);
-        Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default);
-        Task<Option<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default, List<KeyValuePair<string, object>> param = null);
-        Option<T> Get<T>(string url);
-        Option<T> Get<T>(string url, List<KeyValuePair<string, object>> param = null);
-        Task<Option<T>> GetAsync<T>(string url, CancellationToken cancellationToken = default);
-        Task<Option<T>> GetAsync<T>(string url, List<KeyValuePair<string, object>> param = null, CancellationToken cancellationToken = default);
-        Option<T> Post<T>(string url, List<KeyValuePair<string, object>> param);
-        Option<T> Post<T>(string url, object param);
-        Task<Option<T>> PostAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default);
-        Task<Option<T>> PostAsync<T>(string url, object param, CancellationToken cancellationToken = default);
-        Option<T> Put<T>(string url, List<KeyValuePair<string, object>> param);
-        Option<T> Put<T>(string url, object param);
-        Task<Option<T>> PutAsync<T>(string url, List<KeyValuePair<string, object>> param, CancellationToken cancellationToken = default);
-        Task<Option<T>> PutAsync<T>(string url, object param, CancellationToken cancellationToken = default);
-    }
-
-
-    //Excluded from code coverage due to inability to test the extension method 
-    [ExcludeFromCodeCoverage]
+  
     public class HttpConsumer : IHttpConsumer
     {
         private readonly IRestClient _request;
         private DataFormat _defaultDataFormat;
         public HttpConsumer(IRestClient client)
         {
+            Guard.Argument<IRestClient>(client)
+                   .NotNull();
+
             _request = client;
             _defaultDataFormat = DataFormat.Json;
         }
         public HttpConsumer(IRestClient client, DataFormat dataFormat)
         {
+            Guard.Argument<IRestClient>(client)
+                .NotNull();
+
             _request = client;
             _defaultDataFormat = dataFormat;
         }
@@ -238,22 +221,5 @@ namespace NETCoreSignalR.Services.External
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
-
-        public void AddCookies(List<Cookie> cookies)
-        {
-            _request.CookieContainer = new CookieContainer();
-
-            cookies.ForEach(cookie => _request.CookieContainer.Add(cookie));
-        }
-
-        public void AddHeaders(List<KeyValuePair<string, string>> headers)
-        {
-            headers.ForEach(header => _request.AddDefaultHeader(header.Key, header.Value));
-        }
-        public void AddHeaders(KeyValuePair<string, string> header)
-        {
-            _request.AddDefaultHeader(header.Key, header.Value);
-        }
-
     }
 }

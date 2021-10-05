@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Repository.Configurations;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Data;

@@ -12,6 +12,7 @@ using System.Linq;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnitTesting;
+using NETCoreSignalR.Domain.Interfaces;
 
 namespace NETCoreSignalR.Tests.Services.External
 {

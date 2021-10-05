@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Util.Security;
 using System;
 using System.Collections.Generic;

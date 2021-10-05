@@ -1,5 +1,7 @@
 ﻿using LanguageExt;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
+using NETCoreSignalR.Domain.Model;
 using NETCoreSignalR.Repository.Repository;
 using NETCoreSignalR.Services.Pagination;
 using System;
@@ -12,15 +14,6 @@ using System.Threading.Tasks;
 
 namespace NETCoreSignalR.Services.Data
 {
-    public interface ILoggingService
-    {
-        IQueryable<EventLog> Get();
-        IQueryable<EventLog> Get(Expression<Func<EventLog, bool>> filter);
-        Option<EventLog> Get(int id);
-        Task<Option<EventLog>> GetAsync(int id, CancellationToken token);
-        PaginatedList<EventLog> GetPaginatedList(string route, int pageIndex, int pageSize);
-
-    }
     public class LogService : ILoggingService
     {
         public LogService(IRepository<EventLog> repository, IUriService uriService)

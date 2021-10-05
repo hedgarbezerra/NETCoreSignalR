@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Domain.Model.PokeAPI;
 using NETCoreSignalR.Services.Data;
 using NETCoreSignalR.Services.External.PokeAPI;

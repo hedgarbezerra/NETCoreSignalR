@@ -1,4 +1,5 @@
 ﻿using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
 using NETCoreSignalR.Repository.Configurations;
 using System;
 using System.Collections.Generic;

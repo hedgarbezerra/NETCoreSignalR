@@ -1,6 +1,8 @@
 ﻿using AutoFixture;
 using Moq;
 using NETCoreSignalR.Domain.Entities;
+using NETCoreSignalR.Domain.Interfaces;
+using NETCoreSignalR.Domain.Model;
 using NETCoreSignalR.Services.Pagination;
 using NUnit.Framework;
 using System;

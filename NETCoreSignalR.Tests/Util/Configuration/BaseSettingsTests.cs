@@ -8,6 +8,7 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NETCoreSignalR.Domain.Interfaces;
 
 namespace NETCoreSignalR.Tests.Util.Configuration
 {
