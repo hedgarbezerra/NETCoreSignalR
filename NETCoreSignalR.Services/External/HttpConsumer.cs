@@ -15,14 +15,14 @@ namespace NETCoreSignalR.Services.External
   
     public class HttpConsumer : IHttpConsumer
     {
-        private readonly IRestClient _request;
+        private readonly IRestClient _requestClient;
         private DataFormat _defaultDataFormat;
         public HttpConsumer(IRestClient client)
         {
             Guard.Argument<IRestClient>(client)
                    .NotNull();
 
-            _request = client;
+            _requestClient = client;
             _defaultDataFormat = DataFormat.Json;
         }
         public HttpConsumer(IRestClient client, DataFormat dataFormat)
@@ -30,7 +30,7 @@ namespace NETCoreSignalR.Services.External
             Guard.Argument<IRestClient>(client)
                 .NotNull();
 
-            _request = client;
+            _requestClient = client;
             _defaultDataFormat = dataFormat;
         }
 
@@ -38,7 +38,7 @@ namespace NETCoreSignalR.Services.External
         {
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
-            var response = _request.Execute<T>(request, Method.GET);
+            var response = _requestClient.Execute<T>(request, Method.GET);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -51,7 +51,7 @@ namespace NETCoreSignalR.Services.External
                 param.ForEach(p => request.AddParameter(p.Key, p.Value, ParameterType.GetOrPost));
             }
 
-            var response = _request.Execute<T>(request, Method.GET);
+            var response = _requestClient.Execute<T>(request, Method.GET);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -61,7 +61,7 @@ namespace NETCoreSignalR.Services.External
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
-            var response = _request.Execute<T>(request, Method.POST);
+            var response = _requestClient.Execute<T>(request, Method.POST);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -72,7 +72,7 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = _request.Post<T>(request);
+            var response = _requestClient.Post<T>(request);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -82,7 +82,7 @@ namespace NETCoreSignalR.Services.External
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
-            var response = _request.Execute<T>(request, Method.PUT);
+            var response = _requestClient.Execute<T>(request, Method.PUT);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -93,7 +93,7 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = _request.Execute<T>(request, Method.PUT);
+            var response = _requestClient.Execute<T>(request, Method.PUT);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -101,7 +101,7 @@ namespace NETCoreSignalR.Services.External
         public Option<T> Delete<T>(string url)
         {
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-            var response = _request.Execute<T>(request, Method.DELETE);
+            var response = _requestClient.Execute<T>(request, Method.DELETE);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -112,7 +112,7 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = _request.Execute<T>(request, Method.DELETE);
+            var response = _requestClient.Execute<T>(request, Method.DELETE);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -124,7 +124,7 @@ namespace NETCoreSignalR.Services.External
 
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
 
-            var response = await _request.ExecuteAsync<T>(request, Method.GET, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.GET, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -137,7 +137,7 @@ namespace NETCoreSignalR.Services.External
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecuteAsync<T>(request, Method.GET, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.GET, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -150,7 +150,7 @@ namespace NETCoreSignalR.Services.External
             var request = new RestRequest(url, Method.POST, _defaultDataFormat);
             request.AddJsonBody(param);
 
-            var response = await _request.ExecuteAsync<T>(request, Method.POST, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.POST, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -164,7 +164,7 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecuteAsync<T>(request, Method.POST, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.POST, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -178,7 +178,7 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -192,7 +192,7 @@ namespace NETCoreSignalR.Services.External
 
             request.AddJsonBody(param);
 
-            var response = await _request.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.PUT, cancellationToken);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -203,7 +203,7 @@ namespace NETCoreSignalR.Services.External
                 cancellationToken.ThrowIfCancellationRequested();
 
             var request = new RestRequest(url, Method.DELETE, _defaultDataFormat);
-            var response = await _request.ExecuteAsync<T>(request, Method.DELETE);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.DELETE);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
@@ -217,9 +217,20 @@ namespace NETCoreSignalR.Services.External
 
             param.ForEach(p => request.AddParameter(p.Key, p.Value));
 
-            var response = await _request.ExecuteAsync<T>(request, Method.DELETE);
+            var response = await _requestClient.ExecuteAsync<T>(request, Method.DELETE);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
         }
+
+        public void AddCookie(List<Cookie> cookies)
+        {
+            _requestClient.CookieContainer ??= new CookieContainer();
+            cookies.ForEach(cookie => _requestClient.CookieContainer.Add(cookie));
+        }
+
+        public void AddHeader(List<KeyValuePair<string, string>> headers)  =>
+            headers.ForEach(header => _requestClient.AddDefaultHeader(header.Key, header.Value));
+        public void AddHeader(KeyValuePair<string, string> header) =>
+            _requestClient.AddDefaultHeader(header.Key, header.Value);
     }
 }

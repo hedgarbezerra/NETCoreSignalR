@@ -35,6 +35,10 @@ namespace NETCoreSignalR.Tests.Services.External
         {
             return new HttpConsumer(client);
         }
+        private HttpConsumer CreateHttpConsumer(IRestClient client, DataFormat format)
+        {
+            return new HttpConsumer(client, format);
+        }
         [ExcludeFromCodeCoverage]
         private static IRestClient MockRestClient<T>(HttpStatusCode httpStatusCode, object result, bool isAsync) where T : new()
         {
@@ -453,8 +457,9 @@ namespace NETCoreSignalR.Tests.Services.External
             result.ShouldBeSome(res => res.Should().NotBeNull().And.Match<ExampleHttpConsumerImp>(x => x.Id != null && !string.IsNullOrEmpty(x.Item)));
             _mockRepository.VerifyAll();
         }
+
         [Test]
-        public async Task DeleteAsync_SuccessfullFailed_ReturnsNoneOption()
+        public async Task DeleteAsync_FailedRequest_ReturnsNoneOption()
         {
             // Arrange
             string url = _fixture.Create<string>();
@@ -470,7 +475,86 @@ namespace NETCoreSignalR.Tests.Services.External
             // Assert
             result.ShouldBeSome(res => res.Should().NotBeNull().And.Match<ExampleHttpConsumerImp>(x => x.Id != null && !string.IsNullOrEmpty(x.Item)));
             _mockRepository.VerifyAll();
-        }       
+        }
+
+        [Test]
+        public async Task DeleteAsyncWithParams_SuccessfullRequest_ReturnsSomeOption()
+        {
+            // Arrange
+            string url = _fixture.Create<string>();
+            var mqResult = _fixture.Create<ExampleHttpConsumerImp>();
+            var cancellationTokenSource = _fixture.Create<CancellationTokenSource>();
+            var parameters = _fixture.CreateMany<KeyValuePair<string, object>>(2).ToList();
+
+            var client = MockRestClient<ExampleHttpConsumerImp>(HttpStatusCode.OK, mqResult, true);
+            var httpConsumer = CreateHttpConsumer(client);
+
+            // Act
+            var result = await httpConsumer.DeleteAsync<ExampleHttpConsumerImp>(url, cancellationTokenSource.Token, parameters);
+
+            // Assert
+            result.ShouldBeSome(res => res.Should().NotBeNull().And.Match<ExampleHttpConsumerImp>(x => x.Id != null && !string.IsNullOrEmpty(x.Item)));
+            _mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteAsyncWithParams_CancelledTask_ThrowsOperationCancelledException()
+        {
+            // Arrange
+            string url = _fixture.Create<string>();
+            var mqResult = _fixture.Create<ExampleHttpConsumerImp>();
+            var cancellationTokenSource = _fixture.Create<CancellationTokenSource>();
+            var client = MockRestClient<ExampleHttpConsumerImp>(HttpStatusCode.OK, mqResult, true);
+            var httpConsumer = CreateHttpConsumer(client);
+            var parameters = _fixture.CreateMany<KeyValuePair<string, object>>(2).ToList();
+
+            // Act
+            cancellationTokenSource.Cancel();
+
+            // Assert            
+            Assert.ThrowsAsync<OperationCanceledException>(() => httpConsumer.DeleteAsync<ExampleHttpConsumerImp>(url, cancellationTokenSource.Token, parameters));
+            _mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteAsyncWithParams_FailedRequest_ReturnsNoneOption()
+        {
+            // Arrange
+            string url = _fixture.Create<string>();
+            var mqResult = _fixture.Create<ExampleHttpConsumerImp>();
+            var cancellationTokenSource = _fixture.Create<CancellationTokenSource>();
+            var parameters = _fixture.CreateMany<KeyValuePair<string, object>>(2).ToList();
+            var client = MockRestClient<ExampleHttpConsumerImp>(HttpStatusCode.OK, mqResult, true);
+            var httpConsumer = CreateHttpConsumer(client);
+
+            // Act
+            var result = await httpConsumer.DeleteAsync<ExampleHttpConsumerImp>(url, cancellationTokenSource.Token, parameters);
+
+            // Assert
+            result.ShouldBeSome(res => res.Should().NotBeNull().And.Match<ExampleHttpConsumerImp>(x => x.Id != null && !string.IsNullOrEmpty(x.Item)));
+            _mockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public void AddHeader()
+        {
+            // Arrange
+            string url = _fixture.Create<string>();
+            var mqResult = _fixture.Create<ExampleHttpConsumerImp>();
+            var headers = _fixture.CreateMany<KeyValuePair<string, string>>(2).ToList();
+            var client = MockRestClient<ExampleHttpConsumerImp>(HttpStatusCode.OK, mqResult, false);
+            var httpConsumer = CreateHttpConsumer(client);
+
+            httpConsumer.AddHeader(headers);
+
+            // Act
+            var result = httpConsumer.Delete<ExampleHttpConsumerImp>(url);
+
+            // Assert
+            result.ShouldBeSome(res => res.Should().NotBeNull().And.Match<ExampleHttpConsumerImp>(x => x.Id != null && !string.IsNullOrEmpty(x.Item)));
+            _mockRepository.VerifyAll();
+        }
     }
 
     public class ExampleHttpConsumerImp

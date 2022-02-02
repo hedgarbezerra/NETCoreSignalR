@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NETCoreSignalR.Repository.Repository
 {
-    public class LogRepository : BaseRepository<EventLog>, IRepository<EventLog>
+    public class LogRepository : BaseRepository<EventLog>
     {
         public LogRepository(MyDbContext context)
             : base(context)

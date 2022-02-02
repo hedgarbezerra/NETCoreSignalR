@@ -24,9 +24,9 @@ namespace NETCoreSignalR.Domain.Interfaces
         DbContext GetDbContext();
         void SaveChanges();
         T Update(T obj);
-        Task<T> AddAsync(T obj);
+        Task<T> AddAsync(T obj, CancellationToken cancellationToken);
         Task DisposeAsync();
         Task<T> GetAsync(CancellationToken cancellationToken, params object[] id);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

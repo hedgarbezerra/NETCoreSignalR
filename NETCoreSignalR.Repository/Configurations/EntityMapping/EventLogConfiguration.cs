@@ -14,7 +14,6 @@ namespace NETCoreSignalR.Repository.Configurations.EntityMapping
             : base()
         {
         }
-
         protected override void ConfigurateFields(EntityTypeBuilder<EventLog> builder)
         {
             builder.Property(c => c.Id)

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NETCoreSignalR.Domain.Entities;
 using NETCoreSignalR.Services.External;
 using NETCoreSignalR.Util.Configuration;
 using Newtonsoft.Json;
@@ -50,6 +51,12 @@ namespace NETCoreSignalR.API
 
             services.AddDirectoryBrowser();
 
+            #region Identity EF Core
+            //services.AddIdentityCore<User>((opt) => 
+            //    { 
+                    
+            //    });
+            #endregion
 
             #region Setting json handler
             services.AddControllers()

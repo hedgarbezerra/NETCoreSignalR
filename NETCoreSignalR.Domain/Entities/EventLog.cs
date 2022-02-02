@@ -48,7 +48,6 @@ namespace NETCoreSignalR.Domain.Entities
         public XElement XmlContent
         {
             get { return XElement.Parse(Properties); }
-            set { Properties = value.ToString(); }
         }
         public DateTime CreatedTime { get; set; }
         public EventLog()

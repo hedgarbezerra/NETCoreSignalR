@@ -22,9 +22,9 @@ namespace NETCoreSignalR.Repository.Repository
         }
         public virtual T Add(T obj) => _dbContext.Add(obj).Entity;
 
-        public virtual async Task<T> AddAsync(T obj)
+        public virtual async Task<T> AddAsync(T obj, CancellationToken cancellationToken)
         {
-           var result =  await _dbContext.AddAsync(obj);
+           var result =  await _dbContext.AddAsync(obj, cancellationToken);
 
             return result.Entity;
         }
@@ -95,7 +95,7 @@ namespace NETCoreSignalR.Repository.Repository
         [ExcludeFromCodeCoverage]
         public void SaveChanges() => _dbContext.SaveChanges();
         [ExcludeFromCodeCoverage]
-        public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
+        public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _dbContext.SaveChangesAsync(cancellationToken);
         [ExcludeFromCodeCoverage]
         public void Dispose() => _dbContext.Dispose();
         [ExcludeFromCodeCoverage]

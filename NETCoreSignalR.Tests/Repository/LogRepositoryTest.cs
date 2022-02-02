@@ -317,7 +317,7 @@ namespace NETCoreSignalR.Tests.Repository
         public async Task AddAsync_EventLogAdded()
         {
             var log = new EventLog { Message = "New log", Exception = "roleEventLog", CreatedTime = new DateTime(2021, 08, 29) };
-            var addedEventLog = await _repo.AddAsync(log);
+            var addedEventLog = await _repo.AddAsync(log, CancellationToken.None);
             _repo.SaveChanges();
 
             var logs = _repo.Get();
