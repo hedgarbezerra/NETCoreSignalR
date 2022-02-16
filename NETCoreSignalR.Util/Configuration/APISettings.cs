@@ -12,8 +12,8 @@ namespace NETCoreSignalR.Util.Configuration
         {
         }
 
-        public string ConnectionString { get => GetConfiguration("SGNR-CONNECTION-STR", "ConnectionStrings:SGNR"); }
-        public string EncryptionKey { get => GetConfiguration("ENCRYPTION-KEY", "ENCRYPTION_KEY"); }
+        public string ConnectionString { get => GetConfiguration("SGNR-CONNECTION-STR", "ConnectionStrings:DEFAULT"); }
+        public string EncryptionKey { get => GetConfiguration("ENCRYPTIONKEY", "ENCRYPTION_KEY"); }
         public string JWTKey { get => GetConfiguration("TOKEN-KEY", "TOKEN_KEY"); }
         public string KeyVaultClientId { get => GetConfiguration("AZR_KV_APP_ID"); }
         public string KeyVaultURI { get => GetConfiguration("AZR_KV_URI"); }
