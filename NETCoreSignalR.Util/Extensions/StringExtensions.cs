@@ -15,7 +15,17 @@ namespace NETCoreSignalR.Util.Extensions
             {
                 value.AsSpan().CopyTo(span);
                 span[from..to].Fill(substitution);
-            });  
+            });
         }
+        public static void ForEachNext<T>(this IList<T> collection, Action<T, T> func)
+        {
+            for (int i = 0; i < collection.Count - 1; i++)
+                func(collection[i], collection[i + 1]);
+
+            //example
+            // new List<string>().ForEachNext((curr,next) => curr + next));
+        }
+
+
     }
 }
