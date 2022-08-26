@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NETCoreSignalR.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,13 +9,27 @@ using System.Text;
 
 namespace NETCoreSignalR.Repository.Configurations.EntityMapping
 {
+    public class a
+    {
+        public void SD()
+        {
+            var builder = new FluentConfiguration<EventLog>();
+            var efbuilder = builder.ToTable("aa")
+                .AsPrimaryKey("")
+                .WithForeignKey("")
+                .HasField("")
+                .HasField(a => a.MessageTemplate)
+                .Build();
+        }
+    }
     // class created for training porpuses only
     [ExcludeFromCodeCoverage]
     public class FluentConfiguration<T> :
         ITypeSelection<T>,
         ITableNameSelection<T>,
         IPrimaryKeySelection<T>,
-        IForeignKeySelection<T> where T :class
+        IForeignKeySelection<T>,
+        IHasFieldConfiguration<T> where T : class
 
     {
         private readonly EntityTypeBuilder<T> _builder;
@@ -23,7 +38,7 @@ namespace NETCoreSignalR.Repository.Configurations.EntityMapping
             _builder = builder;
         }
 
-        public FluentConfiguration(){}
+        public FluentConfiguration() { }
 
         public static FluentConfiguration<T> Begin(EntityTypeBuilder<T> builder)
         {
@@ -63,7 +78,19 @@ namespace NETCoreSignalR.Repository.Configurations.EntityMapping
             return this;
         }
 
-        public IEntityTypeConfiguration<T> Build()
+        public IHasFieldConfiguration<T> HasField(string keyName)
+        {
+            //logic
+            return this;
+        }
+
+        public IHasFieldConfiguration<T> HasField(Expression<Func<T, object>> expression)
+        {
+            //logic
+            return this;
+        }
+
+        public T Build()
         {
             return null;
         }
@@ -81,15 +108,23 @@ namespace NETCoreSignalR.Repository.Configurations.EntityMapping
         public IPrimaryKeySelection<T> AsPrimaryKey(Expression<Func<T, object>> expression);
     }
 
-    public interface IPrimaryKeySelection<T> where T : class
+    public interface IPrimaryKeySelection<T> : IBuilder<T> where T : class
     {
         public IForeignKeySelection<T> WithForeignKey(string relatedTypeName, string navigationName);
         public IForeignKeySelection<T> WithForeignKey(string navigationName);
     }
 
-    public interface IForeignKeySelection<T> where T: class
+    public interface IForeignKeySelection<T> : IBuilder<T> where T : class
     {
-        public IEntityTypeConfiguration<T> Build();
+        public IHasFieldConfiguration<T> HasField(string keyName);
+        public IHasFieldConfiguration<T> HasField(Expression<Func<T, object>> expression);
+    }
+    public interface IHasFieldConfiguration<T> : IForeignKeySelection<T> where T : class
+    {
+    }
+    public interface IBuilder<T> where T : class
+    {
+        T Build();
     }
 
 }
