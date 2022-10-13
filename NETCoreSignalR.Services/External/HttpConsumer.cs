@@ -1,6 +1,8 @@
 ﻿using Dawn;
 using LanguageExt;
 using NETCoreSignalR.Domain.Interfaces;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,8 @@ namespace NETCoreSignalR.Services.External
     {
         private readonly IRestClient _requestClient;
         private DataFormat _defaultDataFormat;
+        private readonly IAsyncPolicy<IRestResponse> _policy;
+
         public HttpConsumer(IRestClient client)
         {
             Guard.Argument<IRestClient>(client)
@@ -24,6 +28,9 @@ namespace NETCoreSignalR.Services.External
 
             _requestClient = client;
             _defaultDataFormat = DataFormat.Json;
+            _policy = Policy<IRestResponse>.Handle<Exception>()
+            .OrResult(r => !r.IsSuccessful || r.StatusCode >= HttpStatusCode.InternalServerError)
+            .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3));
         }
         public HttpConsumer(IRestClient client, DataFormat dataFormat)
         {
@@ -34,10 +41,13 @@ namespace NETCoreSignalR.Services.External
             _defaultDataFormat = dataFormat;
         }
 
-        public Option<T> Get<T>(string url)
+        public Option<T> Get<T>(string url) 
         {
+            var polly = Policy<IRestResponse<T>>.Handle<Exception>()
+            .OrResult(r => !r.IsSuccessful || r.StatusCode >= HttpStatusCode.InternalServerError)
+            .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3));
             var request = new RestRequest(url, Method.GET, _defaultDataFormat);
-
+            var result = polly.ExecuteAsync(() => _requestClient.ExecuteAsync<T>(request, Method.GET));
             var response = _requestClient.Execute<T>(request, Method.GET);
 
             return (response != null && response.IsSuccessful) ? response.Data : Option<T>.None;
